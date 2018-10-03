@@ -1,0 +1,44 @@
+{
+  "name": "mocha-selenium-runner",
+  "version": "0.1.0",
+  "description": "",
+  "main": "mocha-selenium-client.js",
+  "scripts": {
+    "serve": "http-server -p 8099",
+    "test-sample": "npx ts-node ./src/mocha-selenium.ts http://localhost:8099/test/sample-suite/index-headless.html",
+    "test-sample-chrome": "SELENIUM_BROWSER=chrome npm run test-sample --",
+    "test-sample-firefox": "SELENIUM_BROWSER=firefox npm run test-sample --",
+    "test-sample-safari": "SELENIUM_BROWSER=safari npm run test-sample --",
+    "test": "mocha -r ts-node/register test/*.ts",
+    "watch:test": "npm run test -- --watch-extensions ts --watch"
+  },
+  "author": "zbigg <z.zagorski@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@zbigg/treesync": "^0.2.0",
+    "commander": "^2.18.0",
+    "mocha": "^5.2.0",
+    "selenium-webdriver": "^4.0.0-alpha.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.5",
+    "@types/chai-things": "^0.0.33",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.11.2",
+    "@types/selenium-webdriver": "^3.0.11",
+    "@types/sinon": "^5.0.3",
+    "chai": "^4.2.0",
+    "chai-things": "^0.2.0",
+    "http-server": "^0.11.1",
+    "install": "^0.12.1",
+    "rollup": "^0.66.2",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-typescript2": "^0.17.1",
+    "sinon": "^6.3.5",
+    "ts-node": "^7.0.1",
+    "tsconfig-paths": "^3.6.0",
+    "tslib": "^1.9.3",
+    "typescript": "^3.1.1"
+  }
+}
