@@ -1,0 +1,14 @@
+*~
+.rpt2_cache
+src/*.ts
+lib/*.ts
+!lib/*.d.ts
+test/
+node_modules/
+.gitignore
+.npmignore
+yarn.lock
+rollup.config.js
+tsconfig.json
+.prettierrc.json
+zbigg-*.tgz

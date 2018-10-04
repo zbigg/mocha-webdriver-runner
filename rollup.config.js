@@ -18,8 +18,10 @@ export default [
         plugins: [typescript({
             tsconfigOverride: {
                 compilerOptions: {
-                    "module": "esnext"
-                }
+                    "module": "esnext",
+                    "declaration": false
+                },
+                "include": [ "./src/mocha-selenium-client.ts"]
             }
         }), resolve(), commonjs()]
     }

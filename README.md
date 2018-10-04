@@ -29,10 +29,9 @@ and tell `Mocha` that it should use it as reporter:
 
 Run the test suite:
 
-    TODO (add "official" bin)
-    SELENIUM_BROWSER=Chrome node node_modules/mocha-selenium-reporter/lib/mocha-selenium test/index.html
+    SELENIUM_BROWSER=Chrome npx mocha-selenium-runner test/index.html
 
-    SELENIUM_BROWSER=Firefox node node_modules/mocha-selenium-reporter/lib/mocha-selenium test/index.html --reporter=tap
+    SELENIUM_BROWSER=Firefox npx mocha-selenium-runner test/index.html --reporter=tap
 
 See `package.json` scripts and `test/sample-suite/index-headless` for reference.
 

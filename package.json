@@ -3,14 +3,19 @@
   "version": "0.1.0",
   "description": "Run Mocha tests using Selenium WebDriver",
   "main": "lib/mocha-selenium-client.js",
+  "bin": {
+    "mocha-selenium-runner": "lib/mocha-selenium.js"
+  },
   "scripts": {
+    "build": "tsc && rollup --config rollup.config.js",
     "serve": "http-server -p 8099",
     "test-sample": "npx ts-node ./src/mocha-selenium.ts http://localhost:8099/test/sample-suite/index-headless.html",
     "test-sample-chrome": "SELENIUM_BROWSER=chrome npm run test-sample --",
     "test-sample-firefox": "SELENIUM_BROWSER=firefox npm run test-sample --",
     "test-sample-safari": "SELENIUM_BROWSER=safari npm run test-sample --",
     "test": "mocha -r ts-node/register test/*.ts",
-    "watch:test": "npm run test -- --watch-extensions ts --watch"
+    "watch:test": "npm run test -- --watch-extensions ts --watch",
+    "clean": "rm -rf lib/ dist/"
   },
   "author": "zbigg <z.zagorski@gmail.com>",
   "license": "MIT",
