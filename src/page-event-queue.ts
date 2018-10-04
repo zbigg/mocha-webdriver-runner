@@ -12,7 +12,6 @@ export function emitPageEvent(event: any) {
         window.__pageEventQueue = [];
     }
     window.__pageEventQueue.push(event);
-    console.log("#emitPageEvent, sending", event);
     if (window.__pageEventCallback) {
         window.__pageEventCallback();
         delete window.__pageEventCallback;
@@ -38,7 +37,6 @@ function drainQueueClientWebDriver() {
         const q = (window as any).__pageEventQueue || [];
 
         if (q.length === 0) {
-            //console.log("mocha-selenium-driver: #drainQueueClient, empty, backoff");
             (window as any).__pageEventCallback = tryDrainQueue;
             return;
         }
@@ -46,7 +44,6 @@ function drainQueueClientWebDriver() {
         (window as any).__pageEventQueue = [];
         const encodedResponseRemote = JSON.stringify(q);
 
-        //console.log("mocha-selenium-driver: #drainQueueClient, sent", encodedResponseRemote);
         done(encodedResponseRemote);
     }
 

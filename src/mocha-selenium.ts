@@ -96,7 +96,7 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
                 } else if (event.type === "pending") {
                     runner!.emit("pending", synchronizer.recv(event.test));
                 } else {
-                    console.error("invalid event received from page", event.type || event);
+                    console.error("runMochaTest: invalid event received from page", event.type || event);
                 }
             }
         }

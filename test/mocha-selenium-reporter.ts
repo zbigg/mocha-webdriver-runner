@@ -25,16 +25,12 @@ describe("MochaSeleniumReporter", function() {
         const mocha = new Mocha();
         mocha.addFile(__dirname + "/sample-suite/tests.js");
         mocha.reporter(MochaSeleniumReporter as any);
-        //const synchtonizer = createMochaStateSynchronizer();
         const emitPageEventStub = sandbox.stub(PageEventQueue, "emitPageEvent");
         const events: any[] = [];
         emitPageEventStub.callsFake((event: any) => {
-            // console.log("received event")
             events.push(event);
         });
-        //console.log("running mocha - done");
         mocha.run((failures: number) => {
-            // console.log("mocha - done");
             failures.should.equal(2);
             events.should.include.something.that.deep.equals({ type: "end", failures: 2, passes: 2 });
             done();
