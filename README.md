@@ -8,7 +8,7 @@ features implemented from start:
 * drives browser using Selenium WebDriver, so you can run tests on everything that selenium WebDriver supports. Hint: it supports everything (tm).
 * runs reporters locally, in node environment so most of reporters (which are designed to work in node environment) should work out-of-box:
     * tested mocha builtins: spec, xunit, tap, etc ...
-    * (tbd) mocha-multi-reporter, mocha-awesome
+    * confirmed basic support for custom reporters like `mochawesome`
 
 That's it, have fun.
 

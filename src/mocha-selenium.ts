@@ -72,7 +72,7 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
         await driver.get(url);
         let finished: boolean = false;
         let exitCode: number | undefined;
-
+        let failures: number = 0;
         while (!finished) {
             const events = await fetchPageEvents(driver);
             for (const event of events) {
@@ -94,6 +94,7 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
                 } else if (event.type === "end") {
                     runner!.emit("end");
                     finished = true;
+                    failures = event.failures;
                     exitCode = event.failures === 0 ? 0 : 1;
                 } else if (event.type === "pending") {
                     runner!.emit("pending", synchronizer.recv(event.test));
@@ -103,7 +104,18 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
             }
         }
 
-        return exitCode === 0;
+        // if reporters has 'done', then we shall call it
+        // (mochawesome relies on this).
+        const reporterDone = reporter && (reporter as any).done;
+        if (typeof reporterDone === "function") {
+            return new Promise<boolean>(resolve => {
+                reporterDone(failures, () => {
+                    resolve(exitCode === 0);
+                });
+            })
+        } else {
+            return exitCode === 0;
+        }
     });
 }
 
