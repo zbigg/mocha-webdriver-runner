@@ -2,6 +2,10 @@
   "name": "@zbigg/mocha-selenium-runner",
   "version": "0.1.0",
   "description": "Run Mocha tests using Selenium WebDriver",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/zbigg/mocha-selenium-runner.git"
+  },
   "main": "lib/mocha-selenium-client.js",
   "bin": {
     "mocha-selenium-runner": "lib/mocha-selenium.js"
