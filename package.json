@@ -1,8 +1,8 @@
 {
-  "name": "mocha-selenium-runner",
+  "name": "@zbigg/mocha-selenium-runner",
   "version": "0.1.0",
-  "description": "",
-  "main": "mocha-selenium-client.js",
+  "description": "Run Mocha tests using Selenium WebDriver",
+  "main": "lib/mocha-selenium-client.js",
   "scripts": {
     "serve": "http-server -p 8099",
     "test-sample": "npx ts-node ./src/mocha-selenium.ts http://localhost:8099/test/sample-suite/index-headless.html",
