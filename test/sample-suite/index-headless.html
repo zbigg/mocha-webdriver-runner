@@ -13,15 +13,12 @@
   <script src="../../node_modules/chai/chai.js"></script>
   <script src="../../dist/mocha-selenium-client.js"></script>
   <script>
-    mocha.setup({
-      ui: "bdd",
-      reporter: MochaSeleniumClient.Reporter
-    })
+    mocha.setup({ui: "bdd"});
+    MochaSeleniumClient.install(mocha);
   </script>
   <script src="tests.js"></script>
   <script>
     mocha.checkLeaks();
-    mocha.globals(['__pageEventQueue', '__pageEventCallback'])
     mocha.run();
   </script>
 </body>

@@ -6,8 +6,9 @@ import * as mocha from "mocha";
 import * as path from "path";
 import { Builder, WebDriver } from "selenium-webdriver";
 
-import { fetchPageEvents } from "./page-event-queue";
+import { fetchPageEvents, queuePageCommand } from "./page-event-queue";
 import { createMochaStateSynchronizer } from "./suite-synchronizer";
+import { deserialize } from "@zbigg/treesync";
 
 async function withWebDriver<T>(test: (driver: WebDriver) => T) {
     let theDriver: WebDriver | undefined;
@@ -23,8 +24,8 @@ async function withWebDriver<T>(test: (driver: WebDriver) => T) {
         if (theDriver !== undefined) {
             try {
                 await theDriver.quit();
-            } catch(error) {
-                console.log('withWebDriver: error while quiting WebDriver session', error);
+            } catch (error) {
+                console.log("withWebDriver: error while quiting WebDriver session", error);
             }
         }
         throw error;
@@ -35,6 +36,7 @@ interface Options {
     reporter?: string;
     reporterOptions?: any;
     delay?: boolean;
+    grep?: string;
 }
 
 function getReporterConstructor(options: Options) {
@@ -73,10 +75,21 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
         let finished: boolean = false;
         let exitCode: number | undefined;
         let failures: number = 0;
+        await queuePageCommand(driver, {
+            type: "start-mocha-tests",
+            mochaOptions: {
+                grep: options.grep
+            }
+        });
+
         while (!finished) {
             const events = await fetchPageEvents(driver);
             for (const event of events) {
-                if (event.type === "start") {
+                if (event.type === "log") {
+                    let args = deserialize(event.args) as any;
+                    args = [`[browser] ${event.level}:`].concat(args);
+                    (console as any)[event.level].apply(console, args);
+                } else if (event.type === "start") {
                     const suite = synchronizer.decodePacket(event.suite);
                     runner = new mocha.Runner(suite, options.delay === true);
                     reporter = new reporterConstructor(runner, options);
@@ -112,7 +125,7 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
                 reporterDone(failures, () => {
                     resolve(exitCode === 0);
                 });
-            })
+            });
         } else {
             return exitCode === 0;
         }
@@ -140,14 +153,14 @@ function parseReporterOptions(optionsString?: string) {
     return result;
 }
 
-
 const version = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8")).version;
 
 commander
     .version(version)
     .usage("[debug] [options] URL")
     .option("-O, --reporter-options <k=v,k2=v2,...>", "reporter-specific options")
-    .option("-R, --reporter <name>", "specify the reporter to use", "spec");
+    .option("-R, --reporter <name>", "specify the reporter to use", "spec")
+    .option("-g, --grep <pattern>", "only run tests/suites that match pattern");
 
 commander.parse(process.argv);
 
@@ -161,7 +174,8 @@ const url = commander.args.shift()!;
 const cliOptions = commander.opts();
 const options = {
     reporter: cliOptions.reporter,
-    reporterOptions: parseReporterOptions(cliOptions.reporterOptions)
+    reporterOptions: parseReporterOptions(cliOptions.reporterOptions),
+    grep: cliOptions.grep
 };
 
 runMochaTest(url, options).then(result => {
