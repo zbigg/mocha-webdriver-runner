@@ -2,6 +2,13 @@
   "name": "@zbigg/mocha-selenium-runner",
   "version": "0.1.0",
   "description": "Run Mocha tests using Selenium WebDriver",
+  "keywords": [
+    "mocha",
+    "webdriverjs",
+    "javascript",
+    "tdd",
+    "browser"
+  ],
   "repository": {
     "type" : "git",
     "url" : "https://github.com/zbigg/mocha-selenium-runner.git"
@@ -11,7 +18,7 @@
     "mocha-selenium-runner": "lib/mocha-selenium.js"
   },
   "scripts": {
-    "build": "tsc && rollup --config rollup.config.js",
+    "prepare": "tsc && rollup --config rollup.config.js",
     "serve": "http-server -p 8099",
     "test-sample": "npx ts-node ./src/mocha-selenium.ts http://localhost:8099/test/sample-suite/index-headless.html",
     "test-sample-chrome": "SELENIUM_BROWSER=chrome npm run test-sample --",

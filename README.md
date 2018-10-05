@@ -12,13 +12,20 @@ features implemented from start:
 
 That's it, have fun.
 
-# How to
+## Install
+
+```
+$ npm install @zbigg/mocha-selenium-runner
+
+```
+
+## How to
 
 Prepare your tests to run in browser as described on [Mocha website](https://mochajs.org/#running-mocha-in-the-browser).
 
 Add `mocha-selenium-runner` browser side client:
 
-     <script src="../node_modules/mocha-selenium-runner/dist/mocha-selenium-client.js"></script>
+     <script src="../node_modules/@zbigg/mocha-selenium-runner/dist/mocha-selenium-client.js"></script>
 
 and tell `Mocha` that it should use it as reporter:
 
