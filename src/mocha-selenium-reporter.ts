@@ -19,14 +19,14 @@ export class MochaSeleniumReporter {
         runner.on("start", function() {
             emitPageEvent({
                 type: "start",
-                suite: synchronizer.write(runner.suite)
+                suite: synchronizer.buildPacket(runner.suite)
             });
         });
 
         runner.on("suite", function(suite) {
             emitPageEvent({
                 type: "suite",
-                suite: synchronizer.write(suite)
+                suite: synchronizer.buildPacket(suite)
             });
         });
         runner.on("suite end", function() {
@@ -36,14 +36,14 @@ export class MochaSeleniumReporter {
         runner.on("test end", function(test) {
             emitPageEvent({
                 type: "test end",
-                test: synchronizer.write(test)
+                test: synchronizer.buildPacket(test)
             });
         });
 
         runner.on("pending", function(test) {
             emitPageEvent({
                 type: "pending",
-                test: synchronizer.write(test)
+                test: synchronizer.buildPacket(test)
             });
         });
 
@@ -51,7 +51,7 @@ export class MochaSeleniumReporter {
             passes++;
             emitPageEvent({
                 type: "pass",
-                test: synchronizer.write(test)
+                test: synchronizer.buildPacket(test)
             });
         });
 
@@ -60,8 +60,8 @@ export class MochaSeleniumReporter {
 
             emitPageEvent({
                 type: "fail",
-                test: synchronizer.write(test),
-                err: synchronizer.write(err)
+                test: synchronizer.buildPacket(test),
+                err: synchronizer.buildPacket(err)
             });
         });
 

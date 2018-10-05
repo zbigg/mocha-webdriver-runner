@@ -77,27 +77,27 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
             const events = await fetchPageEvents(driver);
             for (const event of events) {
                 if (event.type === "start") {
-                    const suite = synchronizer.recv(event.suite);
+                    const suite = synchronizer.decodePacket(event.suite);
                     runner = new mocha.Runner(suite, options.delay === true);
                     reporter = new reporterConstructor(runner, options);
                     runner.emit("start");
                 } else if (event.type === "suite") {
-                    runner!.emit("suite", synchronizer.recv(event.suite));
+                    runner!.emit("suite", synchronizer.decodePacket(event.suite));
                 } else if (event.type === "suite end") {
                     runner!.emit("suite end");
                 } else if (event.type === "test end") {
-                    runner!.emit("test end", synchronizer.recv(event.test));
+                    runner!.emit("test end", synchronizer.decodePacket(event.test));
                 } else if (event.type === "pass") {
-                    runner!.emit("pass", synchronizer.recv(event.test));
+                    runner!.emit("pass", synchronizer.decodePacket(event.test));
                 } else if (event.type === "fail") {
-                    runner!.emit("fail", synchronizer.recv(event.test), synchronizer.recv(event.err));
+                    runner!.emit("fail", synchronizer.decodePacket(event.test), synchronizer.decodePacket(event.err));
                 } else if (event.type === "end") {
                     runner!.emit("end");
                     finished = true;
                     failures = event.failures;
                     exitCode = event.failures === 0 ? 0 : 1;
                 } else if (event.type === "pending") {
-                    runner!.emit("pending", synchronizer.recv(event.test));
+                    runner!.emit("pending", synchronizer.decodePacket(event.test));
                 } else {
                     console.error("runMochaTest: invalid event received from page", event.type || event);
                 }

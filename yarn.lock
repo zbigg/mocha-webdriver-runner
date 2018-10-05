@@ -80,10 +80,10 @@
   resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-5.0.3.tgz#2b1840122f372350c563e3ceda2f447b55f3a927"
   integrity sha512-JvnfqYfBapg1Ktjjvb79myQ2A848yCdB+1g/okS9OyNqPrT/qWUIt71G0eyi7msZf0gC4fBd40Yu15Btw6BMfQ==
 
-"@zbigg/treesync@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@zbigg/treesync/-/treesync-0.2.0.tgz#aecd73b3a7bd9fd30b4efbd7889326adc4304b9c"
-  integrity sha512-0lkDH0Ur/ul5o69rHhDbTSPPd6EGxu4f48kcKV1zVDrRiu/3Te1/hEL4dCnJcNm9KyHjTJo9bp/aHWnz9/5RaA==
+"@zbigg/treesync@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@zbigg/treesync/-/treesync-0.2.3.tgz#a14c7373df9d4aa409ac61d247d19d1c0523ce27"
+  integrity sha512-VXiV4IcGhP0uZ4j08NO8UTM43bPZDvTnCy8FA//cQHnj8BXAygaW+kdrBlFP5S9ujAWnmtTtytdHafQ6hyUBUw==
 
 arr-diff@^2.0.0:
   version "2.0.0"
