@@ -21,7 +21,8 @@ const MOCHA_TEST_SYNCHRONIZED_PROPERTIES = [
     "title",
     "state",
     "duration",
-    "currentRetry"
+    "currentRetry",
+    "context"
 ];
 
 export function createMochaStateSynchronizer(): Synchronizer {

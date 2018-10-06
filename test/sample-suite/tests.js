@@ -29,4 +29,16 @@ describe("mocha-selenium", function() {
             assert(true);
         });
     });
+
+    describe("mochawsesome context", function() {
+        it("supports basic string context", function() {
+            this.test.context = [ "hello" ];
+        });
+        it("supports basic title/value", function() {
+            this.test.context = { "title": "foo", value: 3.14 };
+        });
+        it("supports just url-like context", function() {
+            this.test.context = "https://www.fnordware.com/superpng/pnggrad8rgb.jpg";
+        });
+    });
 });
