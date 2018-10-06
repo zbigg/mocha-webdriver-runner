@@ -16,7 +16,6 @@ That's it, have fun.
 
 ```
 $ npm install @zbigg/mocha-selenium-runner
-
 ```
 
 ## How to
@@ -27,24 +26,29 @@ Add `mocha-selenium-runner` browser side client:
 
      <script src="../node_modules/@zbigg/mocha-selenium-runner/dist/mocha-selenium-client.js"></script>
 
-and tell `Mocha` that it should use it as reporter:
+and install `MochaSeleniumClient` in global `mocha` instance:
 
-    mocha.setup({
-      ui: "bdd",
-      reporter: MochaSeleniumClient.Reporter
-    })
+      mocha.setup({ui: "bdd"});
+    + MochaSeleniumClient.install(mocha);
 
 Run the test suite:
 
-    SELENIUM_BROWSER=Chrome npx mocha-selenium-runner test/index.html
+    SELENIUM_BROWSER=chrome npx mocha-selenium-runner test/index.html
 
-    SELENIUM_BROWSER=Firefox npx mocha-selenium-runner test/index.html --reporter=tap
+    SELENIUM_BROWSER=firefox npx mocha-selenium-runner test/index.html --reporter=tap
 
-See `package.json` scripts and `test/sample-suite/index-headless` for reference.
+(assuming your tests are in test/index.html).
 
-(assuming your tests are in index.html).
+See `package.json` scripts and `test/sample-suite/index-headless.html` for reference.
 
 For instructions how to pass parameters to Selenium WebDriver, see [WebDriverJS Builder] documentation.
 
 [WebDriverJS Builder]:https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_Builder.html
 
+## Contribute
+
+PRs accepted.
+
+## License
+
+MIT © Zbigniew Zagórski
