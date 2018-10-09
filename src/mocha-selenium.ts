@@ -124,7 +124,7 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
         const reporterDone = reporter && (reporter as any).done;
         if (typeof reporterDone === "function") {
             return new Promise<boolean>(resolve => {
-                reporterDone(failures, () => {
+                reporterDone.call(reporter, failures, () => {
                     resolve(exitCode === 0);
                 });
             });
