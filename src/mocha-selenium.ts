@@ -4,22 +4,27 @@ import * as commander from "commander";
 import * as fs from "fs";
 import * as mocha from "mocha";
 import * as path from "path";
-import { Builder, WebDriver } from "selenium-webdriver";
+import { Builder, WebDriver, Capabilities } from "selenium-webdriver";
 
 import { fetchPageEvents, queuePageCommand } from "./page-event-queue";
 import { createMochaStateSynchronizer } from "./suite-synchronizer";
 import { deserialize } from "@zbigg/treesync";
 
-async function withWebDriver<T>(test: (driver: WebDriver) => T) {
+import { set } from "lodash";
+
+async function withWebDriver<T>(capabilities: Object | Capabilities, test: (driver: WebDriver) => T) {
     let theDriver: WebDriver | undefined;
     return Promise.resolve(
-        new Builder().build().then(async driver => {
-            theDriver = driver;
-            const result = await test(driver);
-            await driver.quit();
-            theDriver = undefined;
-            return result;
-        })
+        new Builder()
+            .withCapabilities(capabilities)
+            .build()
+            .then(async driver => {
+                theDriver = driver;
+                const result = await test(driver);
+                await driver.quit();
+                theDriver = undefined;
+                return result;
+            })
     ).catch(async (error: Error) => {
         if (theDriver !== undefined) {
             try {
@@ -37,6 +42,7 @@ interface Options {
     reporterOptions?: any;
     delay?: boolean;
     grep?: string;
+    capabilities?: { [name: string]: string };
 }
 
 function getReporterConstructor(options: Options) {
@@ -70,7 +76,7 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
     let runner: mocha.Runner | undefined;
     let reporter: mocha.Reporter | undefined;
 
-    return withWebDriver(async driver => {
+    return withWebDriver(options.capabilities || {}, async driver => {
         await driver.get(url);
         let finished: boolean = false;
         let exitCode: number | undefined;
@@ -155,11 +161,35 @@ function parseReporterOptions(optionsString?: string) {
     return result;
 }
 
+function collectCapabilities(val: string, capabilities: any) {
+    if (!val) {
+        throw new Error("capability cannot be empty");
+    }
+    const dividerIndex = val.indexOf("=");
+    let value;
+    let key;
+    if (dividerIndex === 0) {
+        key = val;
+        value = true;
+    } else {
+        key = val.substr(0, dividerIndex);
+        value = val.substr(dividerIndex + 1);
+    }
+    if (typeof value === "string") {
+        if (value.startsWith("{") || value.startsWith('"') || value.startsWith("[")) {
+            value = JSON.parse(value);
+        }
+    }
+    capabilities = capabilities || {};
+    set(capabilities, key, value);
+    return capabilities;
+}
 const version = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8")).version;
 
 commander
     .version(version)
     .usage("[debug] [options] URL")
+    .option("-C, --capability <name[=value]>", "required browser capability", collectCapabilities)
     .option("-O, --reporter-options <k=v,k2=v2,...>", "reporter-specific options")
     .option("-R, --reporter <name>", "specify the reporter to use", "spec")
     .option("-g, --grep <pattern>", "only run tests/suites that match pattern");
@@ -177,7 +207,8 @@ const cliOptions = commander.opts();
 const options = {
     reporter: cliOptions.reporter,
     reporterOptions: parseReporterOptions(cliOptions.reporterOptions),
-    grep: cliOptions.grep
+    grep: cliOptions.grep,
+    capabilities: commander.capability
 };
 
 runMochaTest(url, options).then(result => {

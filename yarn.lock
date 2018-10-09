@@ -55,6 +55,11 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
+"@types/lodash@^4.14.117":
+  version "4.14.117"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.117.tgz#695a7f514182771a1e0f4345d189052ee33c8778"
+  integrity sha512-xyf2m6tRbz8qQKcxYZa7PA4SllYcay+eh25DN3jmNYY6gSTL7Htc/bttVdkqj2wfJGbeWlQiX8pIyJpKU+tubw==
+
 "@types/mocha@^5.2.5":
   version "5.2.5"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.5.tgz#8a4accfc403c124a0bafe8a9fc61a05ec1032073"
@@ -80,10 +85,10 @@
   resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-5.0.3.tgz#2b1840122f372350c563e3ceda2f447b55f3a927"
   integrity sha512-JvnfqYfBapg1Ktjjvb79myQ2A848yCdB+1g/okS9OyNqPrT/qWUIt71G0eyi7msZf0gC4fBd40Yu15Btw6BMfQ==
 
-"@zbigg/treesync@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@zbigg/treesync/-/treesync-0.2.3.tgz#a14c7373df9d4aa409ac61d247d19d1c0523ce27"
-  integrity sha512-VXiV4IcGhP0uZ4j08NO8UTM43bPZDvTnCy8FA//cQHnj8BXAygaW+kdrBlFP5S9ujAWnmtTtytdHafQ6hyUBUw==
+"@zbigg/treesync@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@zbigg/treesync/-/treesync-0.3.0.tgz#59f5366d4c6addf07cef385ede15b953b7f9c96a"
+  integrity sha512-C4o9Dcq2cgWfFiLPTzUyHBMh8+9K0vCfS7Z06a5oh4AosIVGakpG5rb+Hu9UwZmwUE3gwHf5Ps4UPd3EGyCpCA==
 
 arr-diff@^2.0.0:
   version "2.0.0"
@@ -593,6 +598,11 @@ lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
   integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+
+lodash@^4.17.11:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
+  integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
 
 lolex@^2.3.2, lolex@^2.7.5:
   version "2.7.5"

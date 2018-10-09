@@ -41,10 +41,28 @@ Run the test suite:
 
 See `package.json` scripts and `test/sample-suite/index-headless.html` for reference.
 
-For instructions how to pass parameters to Selenium WebDriver, see [WebDriverJS Builder] documentation.
+## Browser capabilities
 
-[WebDriverJS Builder]:https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_Builder.html
+Use `-C key[=value]` (or `--capability`) options to set requested browser capabilities.
+Value may be plain string, or JSON value, examples:
+```
+-C browserName=firefox
+-C browserName=chrome
+-C chromeOptions.args='["--headless", "--window-size=300,300"]'
+```
 
+Useful links:
+* [Selenium Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
+* [Chrome driver capabilities](https://sites.google.com/a/chromium.org/chromedriver/capabilities)
+
+Selenium WebDriverJS accepts capabilities passed by environment variables as below.
+```
+SELENIUM_BROWSER=chrome
+SELENIUM_BROWSER=firefox:52
+SELENIUM_REMOTE_URL=http://my-selenium-grid:4444/wd/hub
+```
+
+See [WebDriverJS Builder](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_Builder.html)
 ## Contribute
 
 PRs accepted.
