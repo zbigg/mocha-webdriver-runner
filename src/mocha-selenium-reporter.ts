@@ -33,6 +33,13 @@ export class MochaSeleniumReporter {
             emitPageEvent({ type: "suite end" });
         });
 
+        runner.on("test", function(test) {
+            emitPageEvent({
+                type: "test",
+                test: synchronizer.buildPacket(test)
+            });
+        });
+
         runner.on("test end", function(test) {
             emitPageEvent({
                 type: "test end",

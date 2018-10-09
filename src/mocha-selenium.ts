@@ -98,6 +98,8 @@ async function runMochaTest(url: string, options: Options): Promise<boolean> {
                     runner!.emit("suite", synchronizer.decodePacket(event.suite));
                 } else if (event.type === "suite end") {
                     runner!.emit("suite end");
+                } else if (event.type === "test") {
+                    runner!.emit("test", synchronizer.decodePacket(event.test));
                 } else if (event.type === "test end") {
                     runner!.emit("test end", synchronizer.decodePacket(event.test));
                 } else if (event.type === "pass") {
