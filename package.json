@@ -1,6 +1,6 @@
 {
   "name": "@zbigg/mocha-selenium-runner",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Run Mocha tests using Selenium WebDriver",
   "keywords": [
     "mocha",
