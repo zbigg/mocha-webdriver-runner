@@ -31,7 +31,7 @@
   "author": "zbigg <z.zagorski@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@zbigg/treesync": "^0.2.3",
+    "@zbigg/treesync": "^0.3.0",
     "commander": "^2.18.0",
     "mocha": "^5.2.0",
     "selenium-webdriver": "^4.0.0-alpha.1"

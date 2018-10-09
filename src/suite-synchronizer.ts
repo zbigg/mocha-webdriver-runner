@@ -6,20 +6,29 @@ const MOCHA_SUITE_SYNCHRONIZED_PROPERTIES = [
     "tests",
     "suites",
     "pending",
+    "passes",
+    "failures",
     "file",
     "delayed",
     "parent",
+    "root",
+    "rootEmpty",
+    "duration",
     "title"
 ];
 
 const MOCHA_TEST_SYNCHRONIZED_PROPERTIES = [
     "title",
     "speed",
+    "body",
+    "fn", // serialized as string, see below
     "type",
     "err",
     "parent",
     "title",
     "state",
+    "pending",
+    "skipped",
     "duration",
     "currentRetry",
     "context"
@@ -46,6 +55,12 @@ export function createMochaStateSynchronizer(): Synchronizer {
         },
         propertyFilter: (name: string) => {
             return MOCHA_TEST_SYNCHRONIZED_PROPERTIES.includes(name);
+        },
+        propertyMapSerialize: (name: string, value: any) => {
+            if (name === "fn" && typeof value === "function") {
+                return value.toString();
+            }
+            return value;
         }
     });
     return synchronizer;
