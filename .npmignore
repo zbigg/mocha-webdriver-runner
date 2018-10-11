@@ -12,4 +12,5 @@ rollup.config.js
 tsconfig.json
 .prettierrc.json
 zbigg-*.tgz
+TODO.md
 mochawesome-report/
