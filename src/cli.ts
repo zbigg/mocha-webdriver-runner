@@ -59,6 +59,7 @@ commander
     .option("-C, --capability <name[=value]>", "required browser capability", collectCapabilities)
     .option("-O, --reporter-options <k=v,k2=v2,...>", "reporter-specific options")
     .option("-R, --reporter <name>", "specify the reporter to use", "spec")
+    .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
     .option("-g, --grep <pattern>", "only run tests/suites that match pattern");
 
 commander.parse(process.argv);
@@ -74,7 +75,8 @@ const cliOptions = commander.opts();
 const options = {
     reporter: cliOptions.reporter,
     reporterOptions: parseReporterOptions(cliOptions.reporterOptions),
-    grep: cliOptions.grep
+    grep: cliOptions.grep,
+    captureConsoleLog: cliOptions.captureConsoleLog
 };
 
 runMochaWebDriverTest(commander.capability, url, options).then(result => {

@@ -12,14 +12,6 @@
     * requires API
     * xunit test can be based on xpath patching
 
-* pasing logs should be optional
-    * client: captureConsoleLog
-        default undefined
-        undefined can be overriden by driver in init
-        true
-    * driver: captureConsoleLog
-        captureConsoleLog
-
 * enable logging from webdriver
 * enable one run against several browsers from cli
     * look at config from hermione, mochify

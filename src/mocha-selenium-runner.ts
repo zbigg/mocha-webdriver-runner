@@ -87,6 +87,13 @@ export interface Options {
      * Run only tests than name matches `grep` expression.
      */
     grep?: string | RegExp;
+
+    /**
+     * Capture `console.log` (and other) messages executed in browser context.
+     *
+     * Defaults to `true`.
+     */
+    captureConsoleLog?: boolean;
 }
 
 /**
@@ -103,6 +110,7 @@ export async function runMochaWebDriverTest(webDriver: WebDriver | Capabilities,
     }
 
     options = options || {};
+
     const synchronizer = createMochaStateSynchronizer();
 
     const reporterConstructor = getReporterConstructor(options);
@@ -115,17 +123,20 @@ export async function runMochaWebDriverTest(webDriver: WebDriver | Capabilities,
     let finished: boolean = false;
     let exitCode: number | undefined;
     let failures: number = 0;
+
+    const captureConsoleLog = options.captureConsoleLog !== false;
     await queuePageCommand(webDriver, {
         type: "start-mocha-tests",
         mochaOptions: {
-            grep: options.grep
+            grep: options.grep,
+            captureConsoleLog: captureConsoleLog
         }
     });
 
     while (!finished) {
         const events = await fetchPageEvents(webDriver);
         for (const event of events) {
-            if (event.type === "log") {
+            if (event.type === "log" && captureConsoleLog) {
                 let args = deserialize(event.args) as any;
                 args = [`[browser] ${event.level}:`].concat(args);
                 (console as any)[event.level].apply(console, args);
@@ -154,7 +165,7 @@ export async function runMochaWebDriverTest(webDriver: WebDriver | Capabilities,
             } else if (event.type === "pending") {
                 runner!.emit("pending", synchronizer.decodePacket(event.test));
             } else {
-                console.error("runMochaTest: invalid event received from page", event.type || event);
+                console.error("runMochaWebDriverTest: invalid event received from page", event.type || event);
             }
         }
     }

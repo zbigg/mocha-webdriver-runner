@@ -1,6 +1,7 @@
 import { MochaSeleniumReporter } from "./mocha-selenium-reporter";
 import { fetchPageCommand, emitPageEvent } from "./page-event-queue";
 import { serialize } from "@zbigg/treesync";
+import { Options } from "./mocha-selenium-runner";
 
 export { MochaSeleniumReporter as Reporter } from "./mocha-selenium-reporter";
 export { emitPageEvent } from "./page-event-queue";
@@ -27,10 +28,13 @@ export function install(mocha: Mocha) {
 
     mocha.run = function(fn?: ((failures: number) => void | undefined)): Mocha.Runner {
         // TODO: really hacky solution, rewrite somehow
-        function doStartMocha(options: any) {
+        function doStartMocha(options: Options) {
             console.log("mocha-selenium-client: starting mocha with options", options);
             if (options.grep) {
                 mocha.grep(options.grep);
+            }
+            if (options.captureConsoleLog) {
+                installConsoleLogSender();
             }
             originalMochaRun.call(mocha, fn);
         }
@@ -47,20 +51,23 @@ export function install(mocha: Mocha) {
     };
 }
 
-const originalConsole = {
-    log: console.log,
-    info: console.info,
-    warn: console.warn,
-    error: console.error
-};
-function pageEventLogger(level: "log" | "info" | "warn" | "error") {
-    return function(...args: any[]) {
-        originalConsole[level].apply(console, args);
-        emitPageEvent({ type: "log", level, args: serialize(args) });
+function installConsoleLogSender() {
+    const originalConsole = {
+        log: console.log,
+        info: console.info,
+        warn: console.warn,
+        error: console.error
     };
-}
 
-console.log = pageEventLogger("log");
-console.info = pageEventLogger("info");
-console.warn = pageEventLogger("warn");
-console.error = pageEventLogger("error");
+    function pageEventLogger(level: "log" | "info" | "warn" | "error") {
+        return function(...args: any[]) {
+            originalConsole[level].apply(console, args);
+            emitPageEvent({ type: "log", level, args: serialize(args) });
+        };
+    }
+
+    console.log = pageEventLogger("log");
+    console.info = pageEventLogger("info");
+    console.warn = pageEventLogger("warn");
+    console.error = pageEventLogger("error");
+}
