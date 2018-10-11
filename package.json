@@ -13,20 +13,22 @@
     "type": "git",
     "url": "https://github.com/zbigg/mocha-selenium-runner.git"
   },
-  "main": "lib/mocha-selenium-client.js",
+  "module": "es6/index",
+  "main": "es6/index",
+  "browser": "umd/mocha-selenium-client.js",
   "bin": {
-    "mocha-selenium-runner": "lib/cli.js"
+    "mocha-selenium-runner": "es6/cli.js"
   },
   "scripts": {
-    "prepare": "tsc && rollup --config rollup.config.js",
+    "prepare": "tsc && tsc -p tsconfig.es6.json && rollup --config rollup.config.js",
     "serve": "http-server -p 8099",
-    "test-sample": "npx ts-node ./src/mocha-selenium.ts http://localhost:8099/test/sample-suite/index-headless.html",
+    "test-sample": "npx ts-node ./src/cli.ts http://localhost:8099/test/sample-suite/index-headless.html",
     "test-sample-chrome": "SELENIUM_BROWSER=chrome npm run test-sample --",
     "test-sample-firefox": "SELENIUM_BROWSER=firefox npm run test-sample --",
     "test-sample-safari": "SELENIUM_BROWSER=safari npm run test-sample --",
     "test": "mocha -r ts-node/register test/*.ts",
     "watch:test": "npm run test -- --watch-extensions ts --watch",
-    "clean": "rm -rf lib/ dist/"
+    "clean": "rm -rf es6/ cjs/ src/*.{d.ts,js} umd/*.js"
   },
   "author": "zbigg <z.zagorski@gmail.com>",
   "license": "MIT",

@@ -7,7 +7,7 @@
             "dom"
         ],
         "module": "commonjs",
-        "outDir": "lib/",
+        "outDir": "cjs",
         "sourceMap": false,
         "declaration": true,
         "strictNullChecks": true,
