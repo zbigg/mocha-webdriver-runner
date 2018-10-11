@@ -18,7 +18,7 @@ That's it, have fun.
 $ npm install @zbigg/mocha-selenium-runner
 ```
 
-## How to
+## Usage
 
 Prepare your tests to run in browser as described on [Mocha website](https://mochajs.org/#running-mocha-in-the-browser).
 
@@ -55,7 +55,7 @@ Useful links:
 * [Selenium Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
 * [Chrome driver capabilities](https://sites.google.com/a/chromium.org/chromedriver/capabilities)
 
-Selenium WebDriverJS accepts capabilities passed by environment variables as below.
+Selenium WebDriverJS accepts capabilities passed by environment variables as below:
 ```
 SELENIUM_BROWSER=chrome
 SELENIUM_BROWSER=firefox:52
@@ -63,6 +63,26 @@ SELENIUM_REMOTE_URL=http://my-selenium-grid:4444/wd/hub
 ```
 
 See [WebDriverJS Builder](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_Builder.html)
+
+## API
+
+```javascript
+import { runMochaWebDriverTest } from '@zbigg/mocha-selenium-runner/lib/mocha-selenium-runner';
+
+const webDriverCapabilities = {
+    browserName: 'firefox'
+};
+
+runMochaWebDriverTest(webDriverCapabilities, "https://localhost:8080/test/index.html")
+    .then(result => {
+        // result is boolean i.e ok or not ok
+        console.log('test result', result ? ':)' : ':(');
+    })
+    .catch(error => {
+        // something bad happened with runner itself i.e webdriver error or something
+    })
+```
+
 ## Contribute
 
 PRs accepted.

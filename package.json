@@ -15,7 +15,7 @@
   },
   "main": "lib/mocha-selenium-client.js",
   "bin": {
-    "mocha-selenium-runner": "lib/mocha-selenium.js"
+    "mocha-selenium-runner": "lib/cli.js"
   },
   "scripts": {
     "prepare": "tsc && rollup --config rollup.config.js",
