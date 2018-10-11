@@ -47,12 +47,14 @@ Use `-C key[=value]` (or `--capability`) options to set requested browser capabi
 Value may be plain string, or JSON value, examples:
 ```
 -C browserName=firefox
+-C moz:firefoxOptions.args='["-headless"]'
 -C browserName=chrome
 -C chromeOptions.args='["--headless", "--window-size=300,300"]'
 ```
 
 Useful links:
 * [Selenium Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
+* [Gecko driver capabilities](https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Capabilities.html)
 * [Chrome driver capabilities](https://sites.google.com/a/chromium.org/chromedriver/capabilities)
 
 Selenium WebDriverJS accepts capabilities passed by environment variables as below:
