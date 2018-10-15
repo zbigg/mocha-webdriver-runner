@@ -15,7 +15,7 @@ That's it, have fun.
 ## Install
 
 ```
-$ npm install /mocha-webdriver-runner
+$ npm install mocha-webdriver-runner
 ```
 
 ## Usage
