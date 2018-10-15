@@ -15,7 +15,7 @@ That's it, have fun.
 ## Install
 
 ```
-$ npm install @zbigg/mocha-webdriver-runner
+$ npm install /mocha-webdriver-runner
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ Prepare your tests to run in browser as described on [Mocha website](https://moc
 
 Add `mocha-webdriver-runner` browser side client:
 
-     <script src="../node_modules/@zbigg/mocha-webdriver-runner/dist/mocha-webdriver-client.js"></script>
+     <script src="../node_modules/mocha-webdriver-runner/dist/mocha-webdriver-client.js"></script>
 
 and install `MochaWebdriverClient` in global `mocha` instance:
 
@@ -69,7 +69,7 @@ See [WebDriverJS Builder](https://seleniumhq.github.io/selenium/docs/api/javascr
 ## API
 
 ```javascript
-import { runMochaWebDriverTest } from '@zbigg/mocha-webdriver-runner/lib/mocha-webdriver-runner';
+import { runMochaWebDriverTest } from 'mocha-webdriver-runner/lib/mocha-webdriver-runner';
 
 const webDriverCapabilities = {
     browserName: 'firefox'
