@@ -1,4 +1,12 @@
-# Mocha-selenium-runner
+# Deprecated
+
+Renamed to [mocha-webdriver-runner], see
+* npm package: https://www.npmjs.com/package/mocha-webdriver-runner
+* github repo https://github.com/zbigg/mocha-webdriver-runner
+
+--------
+
+# mocha-selenium-runner
 
 Run Mocha tests in browsers using Selenium WebDriver.
 
