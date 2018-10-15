@@ -55,7 +55,7 @@ function getReporterConstructor(options: Options) {
 }
 
 /**
- * Mocha Selenium Runner options.
+ * Mocha Webdriver Runner options.
  */
 export interface Options {
     /**

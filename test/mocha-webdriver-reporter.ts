@@ -10,7 +10,7 @@ import { MochaWebdriverReporter } from "../src/mocha-webdriver-reporter";
 // import { createMochaStateSynchronizer } from "../src/suite-synchronizer";
 import * as PageEventQueue from "../src/page-event-queue";
 
-describe("MochaWebdriverReporter", function() {
+describe("MochaSeleniumReporter", function() {
     let sandbox: sinon.SinonSandbox;
 
     beforeEach(function () {
@@ -32,7 +32,7 @@ describe("MochaWebdriverReporter", function() {
         });
         mocha.run((failures: number) => {
             failures.should.equal(2);
-            events.should.include.something.that.deep.equals({ type: "end", failures: 2, passes: 2 });
+            events.should.include.something.that.deep.equals({ type: "end", failures: 2, passes: 5 });
             done();
         });
     });

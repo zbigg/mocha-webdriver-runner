@@ -11,11 +11,11 @@ declare global {
 
 /**
  * This reporter sends all events received from `runner` to
- * `mocha-selenium-driver` through `page-event-queue`.
+ * `mocha-webdriver-driver` through `page-event-queue`.
  *
  * Objects are serialized using `suite-synchronizer`.
  */
-export class MochaSeleniumReporter {
+export class MochaWebdriverReporter {
     constructor(runner: Runner) {
         let passes = 0;
         let failures = 0;

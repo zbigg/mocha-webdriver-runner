@@ -1,13 +1,5 @@
 # TODO
 
-* cosider new name
-    * mocha-selenium-runner already taken (but not popular nor maintained)
-        * and/or take over, talk with original maintainer !?
-    * proposed
-        * mocha-webdriver-runner
-        * mocha-webdriver
-        * brocha ;) as BROwser moCHA
-
 * write actual tests
     * requires API
     * xunit test can be based on xpath patching

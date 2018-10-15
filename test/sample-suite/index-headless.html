@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Mocha Selenium Tests</title>
+  <title>Mocha Webdriver Tests</title>
   <link href="../../node_modules/mocha/mocha.css" rel="stylesheet">
 </head>
 
@@ -11,10 +11,10 @@
   <div id="mocha"></div>
   <script src="../../node_modules/mocha/mocha.js"></script>
   <script src="../../node_modules/chai/chai.js"></script>
-  <script src="../../dist/mocha-selenium-client.js"></script>
+  <script src="../../dist/mocha-webdriver-client.js"></script>
   <script>
     mocha.setup({ui: "bdd"});
-    MochaSeleniumClient.install(mocha);
+    MochaWebdriverClient.install(mocha);
   </script>
   <script src="tests.js"></script>
   <script>

@@ -1,27 +1,27 @@
-import { MochaSeleniumReporter } from "./mocha-selenium-reporter";
+import { MochaWebdriverReporter } from "./mocha-webdriver-reporter";
 import { fetchPageCommand, emitPageEvent } from "./page-event-queue";
 import { serialize } from "@zbigg/treesync";
-import { Options } from "./mocha-selenium-runner";
+import { Options } from "./mocha-webdriver-runner";
 
-export { MochaSeleniumReporter as Reporter } from "./mocha-selenium-reporter";
+export { MochaWebdriverReporter as Reporter } from "./mocha-webdriver-reporter";
 export { emitPageEvent } from "./page-event-queue";
 
 /**
  * Setups `mocha` instance to send events to
- *  - use [[MochaSeleniumReporter]]
- *  - receive options form `mocha-selenium-runner`
+ *  - use [[MochaWebdriverReporter]]
+ *  - receive options form `mocha-webdriver-runner`
  *
  * Usage:
  *
  *     mocha.setup(...);
- *     MochaSeleniumClient.install(mocha);
+ *     MochaWebdriverClient.install(mocha);
  *     // load tests
  *     mocha.run(...);
  *
  * @param mocha
  */
 export function install(mocha: Mocha) {
-    mocha.reporter(MochaSeleniumReporter as any);
+    mocha.reporter(MochaWebdriverReporter as any);
     const originalMochaRun = mocha.run;
 
     mocha.globals(["__pageEventQueue", "__pageEventCallback", "__driverCommandCallback", "__driverCommandQueue"]);
@@ -29,7 +29,7 @@ export function install(mocha: Mocha) {
     mocha.run = function(fn?: ((failures: number) => void | undefined)): Mocha.Runner {
         // TODO: really hacky solution, rewrite somehow
         function doStartMocha(options: Options) {
-            console.log("mocha-selenium-client: starting mocha with options", options);
+            console.log("mocha-webdriver-client: starting mocha with options", options);
             if (options.grep) {
                 mocha.grep(options.grep);
             }

@@ -1,4 +1,4 @@
-# Mocha-selenium-runner
+# mocha-webdriver-runner
 
 Run Mocha tests in browsers using Selenium WebDriver.
 
@@ -15,27 +15,27 @@ That's it, have fun.
 ## Install
 
 ```
-$ npm install @zbigg/mocha-selenium-runner
+$ npm install @zbigg/mocha-webdriver-runner
 ```
 
 ## Usage
 
 Prepare your tests to run in browser as described on [Mocha website](https://mochajs.org/#running-mocha-in-the-browser).
 
-Add `mocha-selenium-runner` browser side client:
+Add `mocha-webdriver-runner` browser side client:
 
-     <script src="../node_modules/@zbigg/mocha-selenium-runner/dist/mocha-selenium-client.js"></script>
+     <script src="../node_modules/@zbigg/mocha-webdriver-runner/dist/mocha-webdriver-client.js"></script>
 
-and install `MochaSeleniumClient` in global `mocha` instance:
+and install `MochaWebdriverClient` in global `mocha` instance:
 
       mocha.setup({ui: "bdd"});
-    + MochaSeleniumClient.install(mocha);
+    + MochaWebdriverClient.install(mocha);
 
 Run the test suite:
 
-    SELENIUM_BROWSER=chrome npx mocha-selenium-runner test/index.html
+    SELENIUM_BROWSER=chrome npx mocha-webdriver-runner test/index.html
 
-    SELENIUM_BROWSER=firefox npx mocha-selenium-runner test/index.html --reporter=tap
+    SELENIUM_BROWSER=firefox npx mocha-webdriver-runner test/index.html --reporter=tap
 
 (assuming your tests are in test/index.html).
 
@@ -69,7 +69,7 @@ See [WebDriverJS Builder](https://seleniumhq.github.io/selenium/docs/api/javascr
 ## API
 
 ```javascript
-import { runMochaWebDriverTest } from '@zbigg/mocha-selenium-runner/lib/mocha-selenium-runner';
+import { runMochaWebDriverTest } from '@zbigg/mocha-webdriver-runner/lib/mocha-webdriver-runner';
 
 const webDriverCapabilities = {
     browserName: 'firefox'

@@ -3,4 +3,4 @@ lib/*.d.ts
 dist/
 .rpt2_cache/
 node_modules/
-zbigg-mocha-selenium-runner*.tgz
+mocha-webdriver-runner*.tgz

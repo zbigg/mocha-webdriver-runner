@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { set } from "lodash";
-import { runMochaWebDriverTest } from "./mocha-selenium-runner";
+import { runMochaWebDriverTest } from "./mocha-webdriver-runner";
 
 /**
  * Parse `mocha --reporter-options OPTIONS string.
@@ -67,7 +67,7 @@ commander.parse(process.argv);
 const args = commander.args;
 if (args.length < 1) {
     commander.outputHelp();
-    throw new Error("mocha-selenium-runer: URL needed");
+    throw new Error("mocha-webdriver-runer: URL needed");
 }
 
 const url = commander.args.shift()!;

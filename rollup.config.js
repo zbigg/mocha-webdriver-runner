@@ -5,12 +5,12 @@ import commonjs from "rollup-plugin-commonjs";
 
 export default [
     {
-        input: "./src/mocha-selenium-client.ts",
+        input: "./src/mocha-webdriver-client.ts",
         external: ["mocha"],
         output: {
-            file: "./dist/mocha-selenium-client.js",
+            file: "./dist/mocha-webdriver-client.js",
             format: "umd",
-            name: "MochaSeleniumClient",
+            name: "MochaWebdriverClient",
             globals: {
                 mocha: "Mocha"
             }
@@ -21,7 +21,7 @@ export default [
                     "module": "esnext",
                     "declaration": false
                 },
-                "include": [ "./src/mocha-selenium-client.ts"]
+                "include": [ "./src/mocha-webdriver-client.ts"]
             }
         }), resolve(), commonjs()]
     }
