@@ -1,6 +1,6 @@
 {
   "name": "mocha-webdriver-runner",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Run Mocha tests using Selenium WebDriver",
   "keywords": [
     "mocha",
