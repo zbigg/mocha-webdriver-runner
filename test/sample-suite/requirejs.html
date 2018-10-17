@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Webdriver Tests</title>
+    <link href="../../node_modules/mocha/mocha.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="mocha"></div>
+    <script src="https://unpkg.com/requirejs/require.js"></script>
+    <script>
+        /*
+         * Example how tun run tests under require.js.
+         *
+         * Just to show how to resolve dependencies and to check that our
+         * `dist/mocha-webdriver-client` works as UMD module.
+         */
+        require.config({
+            shim: {
+                 "mocha": {
+                     exports: 'Mocha'
+                 },
+                 "tests.js": {
+                     deps: ["bootstrap-mocha", "chai"]
+                 }
+            },
+            paths: {
+                "mocha": ["../../node_modules/mocha/mocha"],
+                "chai": "../../node_modules/chai/chai",
+                "mocha-webdriver-client": "../../dist/mocha-webdriver-client"
+            }
+        });
+
+        define("bootstrap-mocha", ["mocha", "mocha-webdriver-client"], function (_, MochaWebdriverClient) {
+            console.log('bootstrap-mocha');
+            mocha.setup({ ui: "bdd" });
+            MochaWebdriverClient.install(mocha);
+            console.log('mocha bootstraped');
+        });
+
+        require(["tests.js"], function() {
+            mocha.checkLeaks();
+            mocha.run();
+        });
+    </script>
+</body>
+
+</html>

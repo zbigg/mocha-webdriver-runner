@@ -71,11 +71,11 @@ function execPageCommandWebDriver() {
     done();
 }
 
-export async function queuePageCommand(driver: WebDriver, command: any) {
-    await driver.executeAsyncScript(execPageCommandWebDriver, JSON.stringify(command));
+export function queuePageCommand(driver: WebDriver, command: any) {
+    return Promise.resolve(driver.executeAsyncScript(execPageCommandWebDriver, JSON.stringify(command)));
 }
 
-export async function fetchPageCommand(): Promise<any> {
+export function fetchPageCommand(): Promise<any> {
     return new Promise(resolve => {
         function tryShiftCommand() {
             if (!window.__driverCommandQueue || window.__driverCommandQueue.length === 0) {

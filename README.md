@@ -5,10 +5,10 @@ Run Mocha tests in browsers using Selenium WebDriver.
 Inspired by [mocha-chrome](https://www.npmjs.com/package/mocha-chrome), but with following
 features implemented from start:
 
-* drives browser using Selenium WebDriver, so you can run tests on everything that selenium WebDriver supports. Hint: it supports everything (tm).
-* runs reporters locally, in node environment so most of reporters (which are designed to work in node environment) should work out-of-box:
-    * tested mocha builtins: spec, xunit, tap, etc ...
-    * support for `mochawesome` (including usage of `addContext`)
+-   drives browser using Selenium WebDriver, so you can run tests on everything that selenium WebDriver supports. Hint: it supports everything (tm).
+-   runs reporters locally, in node environment so most of reporters (which are designed to work in node environment) should work out-of-box:
+    -   tested mocha builtins: spec, xunit, tap, etc ...
+    -   support for `mochawesome` (including usage of `addContext`)
 
 That's it, have fun.
 
@@ -45,6 +45,7 @@ See `package.json` scripts and `test/sample-suite/index-headless.html` for refer
 
 Use `-C key[=value]` (or `--capability`) options to set requested browser capabilities.
 Value may be plain string, or JSON value, examples:
+
 ```
 -C browserName=firefox
 -C moz:firefoxOptions.args='["-headless"]'
@@ -53,11 +54,13 @@ Value may be plain string, or JSON value, examples:
 ```
 
 Useful links:
-* [Selenium Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
-* [Gecko driver capabilities](https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Capabilities.html)
-* [Chrome driver capabilities](https://sites.google.com/a/chromium.org/chromedriver/capabilities)
+
+-   [Selenium Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
+-   [Gecko driver capabilities](https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Capabilities.html)
+-   [Chrome driver capabilities](https://sites.google.com/a/chromium.org/chromedriver/capabilities)
 
 Selenium WebDriverJS accepts capabilities passed by environment variables as below:
+
 ```
 SELENIUM_BROWSER=chrome
 SELENIUM_BROWSER=firefox:52
@@ -68,22 +71,72 @@ See [WebDriverJS Builder](https://seleniumhq.github.io/selenium/docs/api/javascr
 
 ## API
 
+### Node.Js
+
+From Node.js you can start tests using `runMochaWebDriverTest`.
+
 ```javascript
-import { runMochaWebDriverTest } from 'mocha-webdriver-runner/lib/mocha-webdriver-runner';
+// in node.js context
+import { runMochaWebDriverTest } from "mocha-webdriver-runner";
 
 const webDriverCapabilities = {
-    browserName: 'firefox'
+    browserName: "firefox"
 };
 
 runMochaWebDriverTest(webDriverCapabilities, "https://localhost:8080/test/index.html")
     .then(result => {
         // result is boolean i.e ok or not ok
-        console.log('test result', result ? ':)' : ':(');
+        console.log("test result", result ? ":)" : ":(");
     })
     .catch(error => {
         // something bad happened with runner itself i.e webdriver error or something
-    })
+    });
 ```
+
+### Browser general API
+
+Browser module export global object `MochaWebdriverClient`.
+
+Import examples:
+
+```html
+<!-- from CDN -->
+<script src="https://unpkg.com/mocha-webdriver-runner/dist/mocha-webdriver-client.js"></script>
+<!-- from local node_modules -->
+<script src="../node_modules/mocha-webdriver-runner/dist/mocha-webdriver-client.js"></script>
+```
+
+`MochaWebdriverClient` API
+
+-   `addMochaSource(mocha)` - instruments `mocha` instance to send runner events back to
+    `mocha-selenium-runner` process.
+
+    Example:
+
+    ```javascript
+    mocha.setup({ ui: "bdd" });
+    MochaWebdriverClient.install(mocha);
+    // load sources
+    mocha.run();
+    ```
+
+-   `addWorkerSource(worker: Worker)` - forwards all `mocha-selenium-runner` related events from
+    `worker` back to `mocha-selenium-runner` process (requires properly initialized `mocha` in
+    `worker` context
+
+    Example:
+
+    ```javascript
+    const worker = new Worker("some-test-worker.js");
+    MochaWebdriverClient.addWorkerSource(worker);
+    ```
+
+Examples:
+
+-   [basic tests running in browser](test/sample-suite/index-headless.html)
+-   [require.js based test runner](test/sample-suite/requirejs.html)
+-   [tests ran in worker](test/sample-suite/worker-test.html)
+-   [tests ran in worker in auto mode](test/sample-suite/worker-test-auto.html)
 
 ## Contribute
 

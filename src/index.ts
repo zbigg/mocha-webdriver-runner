@@ -1,1 +1,1 @@
-export * from './mocha-webdriver-runner';
+export * from './MochaWebDriverRunner';

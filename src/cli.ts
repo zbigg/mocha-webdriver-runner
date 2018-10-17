@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { set } from "lodash";
-import { runMochaWebDriverTest } from "./mocha-webdriver-runner";
+import { runMochaWebDriverTest } from "./MochaWebDriverRunner";
 
 /**
  * Parse `mocha --reporter-options OPTIONS string.

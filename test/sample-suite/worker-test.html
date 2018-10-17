@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Webdriver WebWorker Tests</title>
+</head>
+
+<body>
+     <script src="../../dist/mocha-webdriver-client.js"></script>
+     <script>
+         const worker = new Worker("./worker-test-main.js");
+         MochaWebdriverClient.addWorkerSource(worker);
+     </script>
+</body>
+
+</html>

@@ -36,6 +36,10 @@ const MOCHA_TEST_SYNCHRONIZED_PROPERTIES = [
 
 export function createMochaStateSynchronizer(): Synchronizer {
     const synchronizer = new Synchronizer();
+    if (typeof mocha === "undefined") {
+        throw new Error('mocha not loaded, cannot create Mocha Suite/Test synchronizer');
+    }
+
     synchronizer.serializationContext.addClass({
         name: "Mocha.Suite",
         constructor: mocha.Suite as any,
@@ -63,5 +67,6 @@ export function createMochaStateSynchronizer(): Synchronizer {
             return value;
         }
     });
+
     return synchronizer;
 }
