@@ -36,7 +36,7 @@
         define("bootstrap-mocha", ["mocha", "mocha-webdriver-client"], function (_, MochaWebdriverClient) {
             console.log('bootstrap-mocha');
             mocha.setup({ ui: "bdd" });
-            MochaWebdriverClient.install(mocha);
+            MochaWebdriverClient.addMochaSource(mocha);
             console.log('mocha bootstraped');
         });
 

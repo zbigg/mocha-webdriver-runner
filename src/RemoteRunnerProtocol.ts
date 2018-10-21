@@ -25,17 +25,9 @@ export interface RemoteRunnerOptions {
     captureConsoleLog?: boolean;
 }
 
-/**
- * Sent from driver to worker in automatic mode to boostrap worker i.e
- * - load essential scripts (mocha, mocha-webdriver-client)
- * - load actual test scripts
- *
- * It's expected that worker will respond with [[MochaReadyMessage]]
- */
-export interface BootstrapWorkerMessage {
-    type: "boostrap-worker";
+export interface RemoteBootstrapParams {
     baseUrl: string;
-    bootstrapScripts?: string[];
+    bootstrapScripts: string[];
     tests: string[];
 }
 
@@ -107,5 +99,4 @@ export type RemoteRunnerMessage =
     | MochaRunnerEventMessage
     | UnhandledExceptionMessage
     | AbortedMessage
-    | LogMessage
-    | BootstrapWorkerMessage
+    | LogMessage;

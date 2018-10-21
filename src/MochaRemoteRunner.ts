@@ -88,15 +88,24 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
                     if (!captureConsoleLog) {
                         return;
                     }
-                    const args = [`[browser] ${message.level}:`].concat(decodeMessage(message.args));
+                    const args = [`[remote] ${message.level}:`].concat(decodeMessage(message.args));
                     (console as any)[message.level].apply(console, args);
                     break;
                 case "err-unhandled-exception":
                     {
-                        console.error(message.message);
                         const error = decodeMessage(message.error);
-                        if (error) {
-                            console.error(error);
+                        if (!started) {
+                            cleanup();
+                            const forwardedError = new Error("[remote] " + (error ? error.message : message.message))
+                            if (error && error.stack) {
+                                forwardedError.stack = error.stack;
+                            }
+                            reject(forwardedError);
+                        } else {
+                            console.error(message.message);
+                            if (error) {
+                                console.error(error);
+                            }
                         }
                     }
                     break;
@@ -105,7 +114,7 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
                     break;
                 case "err-aborted":
                     {
-                        const error = decodeMessage(message.error);
+                        const error = message.error && decodeMessage(message.error);
                         if (error) {
                             console.error(error);
                         }

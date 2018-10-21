@@ -1,6 +1,6 @@
 import { WebWorkerMessagePort } from "./WebWorkerMessagePort";
 import { BrowserMessagePort } from "./BrowserMessagePort";
-import { RemoteRunnerOptions, LogMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
+import { RemoteRunnerOptions, LogMessage, UnhandledExceptionMessage, AbortedMessage } from "./RemoteRunnerProtocol";
 import { buildMessage } from "@zbigg/treesync";
 
 declare let self: Worker & {
@@ -16,6 +16,22 @@ export function inWebWorkerContext() {
 export const runnerBackChannel = inWebWorkerContext()
     ? new WebWorkerMessagePort()
     : new BrowserMessagePort();
+
+export function reportAbort(message: string, error?: Error) {
+    runnerBackChannel.postMessage(<AbortedMessage>{
+        type: "err-aborted",
+        message,
+        error: buildMessage(error)
+    });
+}
+
+export function reportError(message: string, error?: Error) {
+    runnerBackChannel.postMessage(<UnhandledExceptionMessage>{
+        type: "err-unhandled-exception",
+        message: message,
+        error: buildMessage(error)
+    });
+}
 
 export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
 
@@ -97,6 +113,7 @@ export function installGlobalErrorHandlers() {
     });
 
     self.addEventListener("error", event => {
+        console.log('global error', event.error);
         runnerBackChannel.postMessage({
             type: "err-unhandled-exception",
             message: "Unhandled error in Browser context.",

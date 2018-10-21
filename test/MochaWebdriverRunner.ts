@@ -5,7 +5,7 @@ import * as xpath from "xpath";
 // import * as xmldom from 'xmldom';
 const xmldom = require("xmldom");
 
-import { runMochaWebDriverTest } from "../src/MochaWebDriverRunner";
+import { runMochaWebDriverTest, runMochaWebDriverTestAuto } from "../src/MochaWebDriverRunner";
 
 class NullReporter extends Mocha.reporters.Base {
     constructor(runner: Mocha.Runner) {
@@ -30,8 +30,7 @@ describe("MochaWebdriverRunner", function() {
                 output: xunitTmpFile,
                 suiteName: "Test Suite Name"
             }
-
-        }
+        };
         beforeEach(function() {
             if (fs.existsSync(xunitTmpFile)) {
                 fs.unlinkSync(xunitTmpFile);
@@ -62,23 +61,52 @@ describe("MochaWebdriverRunner", function() {
             assert.equal(tests.length, 9);
         }
 
-        it("generates correct xunit output from browser test", async function() {
-            const testResult = await runMochaWebDriverTest(
-                defaultCapabilities,
-                "file://" + __dirname + "/sample-suite/index-headless.html",
-                runTestOptions
-            );
-            assert.equal(testResult, false);
-            xunitSuiteAsserts();
-        });
-        it("generates correct xunit output from worker auto test", async function() {
-            const testResult = await runMochaWebDriverTest(
-                defaultCapabilities,
-                "file://" + __dirname + "/sample-suite/worker-test-auto.html",
-                runTestOptions
-            );
-            assert.equal(testResult, false);
-            xunitSuiteAsserts();
+        describe("html-based examples", function() {
+            it("sample basic browser test", async function() {
+                this.timeout(5000);
+                const testResult = await runMochaWebDriverTest(
+                    defaultCapabilities,
+                    "file://" + __dirname + "/sample-suite/index-headless.html",
+                    runTestOptions
+                );
+                assert.equal(testResult, false);
+                xunitSuiteAsserts();
+            });
+            it("sample auto web worker test", async function() {
+                this.timeout(5000);
+                const testResult = await runMochaWebDriverTest(
+                    defaultCapabilities,
+                    "file://" + __dirname + "/sample-suite/worker-test-auto.html",
+                    runTestOptions
+                );
+                assert.equal(testResult, false);
+                xunitSuiteAsserts();
+            });
+        })
+
+        describe("#runMochaWebDriverTestAuto", function() {
+            it("sample auto browser test", async function() {
+                this.timeout(5000);
+                const testResult = await runMochaWebDriverTestAuto(defaultCapabilities, ["./test/sample-suite/txests.js"], {
+                    ...runTestOptions,
+                    bootstrapScripts: ["mocha/mocha.js", "./dist/mocha-webdriver-client.js"],
+                    bootstrapScriptsExtra: ["chai/chai.js"]
+                });
+                assert.equal(testResult, false);
+                xunitSuiteAsserts();
+            });
+            it("sample auto web worker test", async function() {
+                this.timeout(5000);
+                const testResult = await runMochaWebDriverTestAuto(defaultCapabilities, ["./test/sample-suite/tests.js"], {
+                    ...runTestOptions,
+                    mode: 'web-worker',
+                    bootstrapScripts: ["mocha/mocha.js", "./dist/mocha-webdriver-client.js"],
+                    bootstrapScriptsExtra: ["chai/chai.js"],
+                    bootstrapScriptsDom: ["./dist/mocha-webdriver-client.js"]
+                });
+                assert.equal(testResult, false);
+                xunitSuiteAsserts();
+            });
         });
     });
     describe("timeout support", function() {

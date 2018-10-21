@@ -15,7 +15,7 @@
   <script>
       console.log('hello');
     mocha.setup({ui: "bdd"});
-    MochaWebdriverClient.install(mocha);
+    MochaWebdriverClient.addMochaSource(mocha);
   </script>
   <script src="tests.js"></script>
   <script>

@@ -5,6 +5,8 @@ import { RemoteRunnerMessage } from "./RemoteRunnerProtocol";
 
 /**
  * Node side of Worker-like channel between node and browser context.
+ *
+ * Context: Node.js
  */
 export class WebDriverMessagePort extends MessagePortBase {
     constructor(public driver: WebDriver) {
@@ -56,6 +58,7 @@ export class WebDriverMessagePort extends MessagePortBase {
                 this.tryProcessQueue();
             });
     }
+
     private queueCommand<T>(fun: () => Promise<T>): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             this.queuedCommands.push({
