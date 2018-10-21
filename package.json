@@ -65,6 +65,8 @@
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.6.0",
     "tslib": "^1.9.3",
-    "typescript": "^3.1.1"
+    "typescript": "^3.1.1",
+    "xmldom": "^0.1.27",
+    "xpath": "^0.0.27"
   }
 }
