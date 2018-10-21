@@ -1,5 +1,5 @@
 import * as mocha from "mocha";
-import { SerializationMessage, TransportValue, SyncPayload } from "@zbigg/treesync";
+import { SerializationMessage, SyncPayload } from "@zbigg/treesync";
 
 export interface RemoteRunnerOptions {
     /**

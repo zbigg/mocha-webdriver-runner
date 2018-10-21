@@ -2,7 +2,6 @@ import { WebWorkerMessagePort } from "./WebWorkerMessagePort";
 import { BrowserMessagePort } from "./BrowserMessagePort";
 import { RemoteRunnerOptions, LogMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
 import { buildMessage } from "@zbigg/treesync";
-import { Options } from "./MochaRemoteRunner";
 
 declare let self: Worker & {
     importScripts(..._scripts: string[]): void;
@@ -23,23 +22,6 @@ export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
     if (options.captureConsoleLog) {
         installConsoleLogForwarder();
     }
-}
-
-/**
- * Wait for [[MochaRunMessage]] with [[RemoteRunnerOptions]] on `runnerBackChannel`.
- */
-export function waitForRunnerOptions(): Promise<RemoteRunnerOptions> {
-    // TODO: this is really hacky and dirty!, rewrite to register for particular event type from driver
-    return new Promise<Options>(resolve => {
-        const onMessage = (event: MessageEvent) => {
-            const message = event.data as RemoteRunnerMessage;
-            if (message && message.type === "mocha-run") {
-                runnerBackChannel.removeEventListener("message", onMessage);
-                resolve(message.mochaOptions);
-            }
-        };
-        runnerBackChannel.addEventListener("message", onMessage);
-    });
 }
 
 let consoleLogSenderInstalled = false;

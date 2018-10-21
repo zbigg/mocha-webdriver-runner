@@ -72,27 +72,46 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
             if (!message) {
                 console.log("#runRemoteMochaTest: received empty event");
             }
-            if (message.type === "log" && captureConsoleLog) {
-                const args = [`[browser] ${message.level}:`].concat(decodeMessage(message.args));
-                (console as any)[message.level].apply(console, args);
-            } else if (message.type === "mocha-runner-event" ) {
-                processRunnerEvent(synchronizer.decodePacket(message.event));
-            } else if (message.type === "err-aborted") {
-                if (started) {
-                    // TODO: ???
-                }
-                const error = decodeMessage(message.error);
-                if (error) {
-                    console.error(error);
-                }
-                cleanup();
-                reject(new Error(message.message));
-            } else if (message.type === "err-unhandled-exception") {
-                console.error(message.message);
-                const error = decodeMessage(message.error);
-                if (error) {
-                    console.error(error);
-                }
+
+            switch (message.type) {
+                case "mocha-ready":
+                    messagePort.postMessage(<MochaRunMessage>{
+                        type: "mocha-run",
+                        mochaOptions: {
+                            grep: options.grep,
+                            captureConsoleLog: captureConsoleLog
+                        }
+                    });
+                    break;
+                case "log":
+                    if (!captureConsoleLog) {
+                        return;
+                    }
+                    const args = [`[browser] ${message.level}:`].concat(decodeMessage(message.args));
+                    (console as any)[message.level].apply(console, args);
+                    break;
+                case "err-unhandled-exception":
+                    {
+                        console.error(message.message);
+                        const error = decodeMessage(message.error);
+                        if (error) {
+                            console.error(error);
+                        }
+                    }
+                    break;
+                case "mocha-runner-event":
+                    processRunnerEvent(synchronizer.decodePacket(message.event));
+                    break;
+                case "err-aborted":
+                    {
+                        const error = decodeMessage(message.error);
+                        if (error) {
+                            console.error(error);
+                        }
+                        cleanup();
+                        reject(new Error(message.message));
+                    }
+                    break;
             }
         }
 
@@ -107,14 +126,6 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
         }
 
         function start() {
-            messagePort.postMessage(<MochaRunMessage>{
-                type: "mocha-run",
-                mochaOptions: {
-                    grep: options.grep,
-                    captureConsoleLog: captureConsoleLog
-                }
-            });
-
             messagePort.addEventListener("message", onMessage);
             messagePort.addEventListener("error", onErrorEvent);
         }

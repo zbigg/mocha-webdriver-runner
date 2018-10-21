@@ -1,10 +1,5 @@
-import { waitForRunnerOptions, runnerBackChannel } from "./RemoteCommon";
-import {
-    UnhandledExceptionMessage,
-    RemoteRunnerMessage,
-    AbortedMessage,
-    MochaRunMessage
-} from "./RemoteRunnerProtocol";
+import { runnerBackChannel } from "./RemoteCommon";
+import { UnhandledExceptionMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
 import { buildMessage } from "@zbigg/treesync";
 
 /**
@@ -20,50 +15,23 @@ import { buildMessage } from "@zbigg/treesync";
  * MochaWebdriverClient.addWorkerSource(testsWorker);
  */
 export function addWorkerSource(worker: Worker) {
-    let firstMessageReceived = false;
-
-    worker.addEventListener("message", event => {
-        if (!firstMessageReceived) {
-            firstMessageReceived = true;
-        }
+    runnerBackChannel.addEventListener("message", event => {
         const message = event.data as RemoteRunnerMessage;
-        switch (message.type) {
-            case "mocha-ready":
-                waitForRunnerOptions().then(mochaOptions => {
-                    worker.postMessage(<MochaRunMessage>{
-                        type: "mocha-run",
-                        mochaOptions
-                    });
-                });
-                break;
-            case "mocha-runner-event":
-            case "mocha-finished":
-            case "log":
-            case "err-unhandled-exception":
-            case "err-aborted":
-                // just forward up to node.js, message is already serialized in format
-                // expected by runner
-                runnerBackChannel.postMessage(message);
-                break;
-            default:
-                return;
+        if (message && message.type === "mocha-run") {
+            worker.postMessage(message);
         }
     });
+
+    worker.addEventListener("message", event => {
+        const message = event.data as RemoteRunnerMessage;
+        runnerBackChannel.postMessage(message);
+    });
+
     worker.addEventListener("error", event => {
-        if (!firstMessageReceived) {
-            worker.terminate();
-            const message = "Unable to start Worker";
-            runnerBackChannel.postMessage(<AbortedMessage>{
-                type: "err-aborted",
-                message,
-                error: buildMessage(event.error || event.message)
-            });
-        } else {
-            runnerBackChannel.postMessage(<UnhandledExceptionMessage>{
-                type: "err-unhandled-exception",
-                message: "Unhandled error in Worker context.",
-                error: buildMessage(event.error || event.message)
-            });
-        }
+        runnerBackChannel.postMessage(<UnhandledExceptionMessage>{
+            type: "err-unhandled-exception",
+            message: "Unhandled error in Worker context.",
+            error: buildMessage(event.error || event.message)
+        });
     });
 }

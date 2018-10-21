@@ -1,6 +1,6 @@
 import { MochaRemoteReporter } from "./MochaRemoteReporter";
-import { waitForRunnerOptions, applyMochaOptions, installGlobalErrorHandlers, runnerBackChannel } from "./RemoteCommon";
-import { MochaReadyMessage, MochaFinishedMessage } from "./RemoteRunnerProtocol";
+import { applyMochaOptions, installGlobalErrorHandlers, runnerBackChannel } from "./RemoteCommon";
+import { MochaReadyMessage, MochaFinishedMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
 
 /**
  * Adds mocha instance which will send test events, when ran.
@@ -27,29 +27,29 @@ export function addMochaSource(mocha: Mocha) {
     mocha.globals(["__pageEventQueue", "__pageEventCallback", "__driverCommandCallback", "__driverCommandQueue"]);
 
     mocha.run = function(fn?: ((failures: number) => void | undefined)): Mocha.Runner {
-        // TODO: really hacky solution, rewrite somehow
-        runnerBackChannel.postMessage(<MochaReadyMessage>{
-            type: "mocha-ready"
-        });
 
-        waitForRunnerOptions().then(options => {
-            applyMochaOptions(mocha, options);
+        runnerBackChannel.addEventListener("message", event => {
+            const message = event.data as RemoteRunnerMessage;
+            if (message && message.type === "mocha-run") {
+                applyMochaOptions(mocha, message.mochaOptions || {});
 
-            console.log("mocha-webdriver: starting mocha with options", options);
-            originalMochaRun.call(mocha, (failures: number) => {
-                runnerBackChannel.postMessage(<MochaFinishedMessage>{
-                    type: "mocha-finished"
-                    // TODO
-                    // failures
+                originalMochaRun.call(mocha, (failures: number) => {
+                    runnerBackChannel.postMessage(<MochaFinishedMessage>{
+                        type: "mocha-finished"
+                    });
+                    if (fn) {
+                        fn(failures);
+                    }
                 });
-                if (fn) {
-                    fn(failures);
-                }
-            });
+            }
         });
 
         return undefined!;
     };
+
+    runnerBackChannel.postMessage(<MochaReadyMessage>{
+        type: "mocha-ready"
+    });
 }
 
 /**

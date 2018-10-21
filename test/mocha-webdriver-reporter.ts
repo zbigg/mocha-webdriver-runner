@@ -10,8 +10,7 @@ const assert = chai.assert;
 import * as PageEventQueue from "../src/page-event-queue";
 import { MochaRemoteReporter } from "../src/MochaRemoteReporter";
 import { createMochaStateSynchronizer } from "../src/suite-synchronizer";
-import { AssertionError } from "assert";
-import { MochaRunnerEventMessage, RemoteRunnerMessage } from "../src/RemoteRunnerProtocol";
+import { RemoteRunnerMessage } from "../src/RemoteRunnerProtocol";
 
 describe("MochaWebDriverReporter", function() {
     let sandbox: sinon.SinonSandbox;

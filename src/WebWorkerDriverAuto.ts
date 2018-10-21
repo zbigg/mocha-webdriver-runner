@@ -81,7 +81,7 @@ function workerCode() {
             self.postMessage(<UnhandledExceptionMessage>{
                 type: "err-unhandled-exception",
                 message: "[worker] " + error.message,
-                // manuall serialized error
+                // manually serialized error
                 error: {
                     root: {
                         type: 'error',
