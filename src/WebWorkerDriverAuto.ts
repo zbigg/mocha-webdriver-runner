@@ -21,6 +21,7 @@ declare global {
 }
 
 function workerCode() {
+    const MAGIC_TIMEOUT = -133;
     const DEFAULT_BOOTSTRAP_SCRIPTS = [
         "../node_modules/mocha/mocha.js",
         "../node_modules/mocha-webdriver-runner/dist/mocha-webdriver-client.js"
@@ -52,6 +53,8 @@ function workerCode() {
             ui: "bdd",
             reporter: MochaWebdriverClient.Reporter as any
         });
+        mocha.timeout(MAGIC_TIMEOUT);
+
         const tests = env.tests || [];
         tests.forEach(function(testUrl: string) {
             self.importScripts(baseUrl + testUrl);

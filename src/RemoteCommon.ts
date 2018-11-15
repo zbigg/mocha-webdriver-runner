@@ -7,6 +7,8 @@ declare let self: Worker & {
     importScripts(..._scripts: string[]): void;
 };
 
+export const MAGIC_TIMEOUT = -133;
+
 export function inWebWorkerContext() {
     return typeof self !== "undefined" && typeof self.importScripts !== "undefined";
 }
@@ -16,11 +18,38 @@ export const runnerBackChannel = inWebWorkerContext()
     : new BrowserMessagePort();
 
 export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
+
+    if (options.captureConsoleLog) {
+        installConsoleLogForwarder();
+    }
+
     if (options.grep) {
         mocha.grep(options.grep);
     }
-    if (options.captureConsoleLog) {
-        installConsoleLogForwarder();
+
+    {
+        const timeout = options.timeout !== undefined ? options.timeout : 2000;
+        mocha.timeout(timeout);
+        const overrideMagicTimeout = (obj: Mocha.Runnable | Mocha.Suite) => {
+            if (obj.timeout() === MAGIC_TIMEOUT) {
+                obj.timeout(timeout);
+            }
+        }
+
+        const setTimeoutRecursive = (suite: Mocha.Suite) => {
+            overrideMagicTimeout(suite);
+
+            suite.tests.forEach(overrideMagicTimeout);
+            (suite as any)._beforeEach.forEach(overrideMagicTimeout);
+            (suite as any)._beforeAll.forEach(overrideMagicTimeout);
+            (suite as any)._afterEach.forEach(overrideMagicTimeout);
+            (suite as any)._afterAll.forEach(overrideMagicTimeout);
+
+            suite.suites.forEach(subSuite => {
+                setTimeoutRecursive(subSuite);
+            });
+        }
+        setTimeoutRecursive(mocha.suite);
     }
 }
 

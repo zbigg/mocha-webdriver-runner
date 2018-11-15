@@ -1,4 +1,5 @@
 import { assert } from "chai";
+import * as Mocha from 'mocha';
 import * as fs from "fs";
 import * as xpath from "xpath";
 // import * as xmldom from 'xmldom';
@@ -6,15 +7,23 @@ const xmldom = require("xmldom");
 
 import { runMochaWebDriverTest } from "../src/MochaWebDriverRunner";
 
-describe.skip("MochaWebdriverRrunner", function() {
+class NullReporter extends Mocha.reporters.Base {
+    constructor(runner: Mocha.Runner) {
+        super(runner);
+    }
+}
+
+describe.skip("MochaWebdriverRunner", function() {
+    const defaultCapabilities: any = {
+        browserName: "chrome",
+        chromeOptions: {
+            args: ["--headless", "--window-size=300,300"]
+        }
+    };
+
     describe("Mocha xunit reporter support", function() {
         const xunitTmpFile = "xunit-tmp.xml";
-        const defaultCapabilities: any = {
-            browserName: "chrome",
-            chromeOptions: {
-                args: ["--headless", "--window-size=300,300"]
-            }
-        };
+
         const runTestOptions = {
             reporter: "xunit",
             reporterOptions: {
@@ -72,4 +81,31 @@ describe.skip("MochaWebdriverRrunner", function() {
             xunitSuiteAsserts();
         });
     });
+    describe("timeout support", function() {
+        this.timeout(8000);
+
+        it("fails on timeout", async function() {
+            this.timeout(4000);
+            const testResult = await runMochaWebDriverTest(
+                defaultCapabilities,
+                "file://" + __dirname + "/sample-suite/headless-timeout.html",
+                {
+                    reporter: NullReporter
+                }
+            );
+            assert.equal(testResult, false);
+        });
+        it("supports timeout override", async function() {
+            this.timeout(4000);
+            const testResult = await runMochaWebDriverTest(
+                defaultCapabilities,
+                "file://" + __dirname + "/sample-suite/headless-timeout.html",
+                {
+                    reporter: NullReporter,
+                    timeout: 3000
+                }
+            );
+            assert.equal(testResult, true);
+        })
+    })
 });
