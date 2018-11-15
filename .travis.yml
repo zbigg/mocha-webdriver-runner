@@ -1,20 +1,15 @@
-#
-# travis (http://travis-ci.org/)
-#  build description
-#   for portz (https://github.com/zbigg/portz)
-#
-
 os:
   - linux
   - osx
+
+addons:
+  chrome: stable
+  firefox: latest
 
 language: node_js
 
 node_js:
   - "10"
   - "8"
-
-#before_install:
-#  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -y install google-chrome-stable ; fi
 
 

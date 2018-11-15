@@ -13,7 +13,7 @@ class NullReporter extends Mocha.reporters.Base {
     }
 }
 
-describe.skip("MochaWebdriverRunner", function() {
+describe("MochaWebdriverRunner", function() {
     const defaultCapabilities: any = {
         browserName: "chrome",
         chromeOptions: {
