@@ -1,5 +1,8 @@
 # mocha-webdriver-runner
 
+[![npm](https://img.shields.io/npm/v/mocha-webdriver-runner.svg?style=flat-square)](http://www.npmjs.com/package/mocha-webdriver-runner)
+[![Build status](https://travis-ci.org/zbigg/mocha-webdriver-runner.svg)](https://travis-ci.org/zbigg/mocha-webdriver-runner)
+
 Run Mocha tests in browsers using Selenium WebDriver.
 
 Inspired by [mocha-chrome](https://www.npmjs.com/package/mocha-chrome), but with following
