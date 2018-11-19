@@ -6,7 +6,7 @@ const xmldom = require("xmldom");
 
 import { runMochaWebDriverTest } from "../src/MochaWebDriverRunner";
 
-describe("MochaWebdriverRrunner", function() {
+describe.skip("MochaWebdriverRrunner", function() {
     describe("Mocha xunit reporter support", function() {
         const xunitTmpFile = "xunit-tmp.xml";
         const defaultCapabilities: any = {

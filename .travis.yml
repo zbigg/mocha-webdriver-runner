@@ -1,0 +1,16 @@
+#
+# travis (http://travis-ci.org/)
+#  build description
+#   for portz (https://github.com/zbigg/portz)
+#
+
+os:
+  - linux
+  - osx
+
+language: node_js
+
+#before_install:
+#  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -y install google-chrome-stable ; fi
+
+
