@@ -6,6 +6,7 @@ import * as path from "path";
 
 import { set } from "lodash";
 import { runMochaWebDriverTest } from "./MochaWebDriverRunner";
+import { Options } from "./MochaRemoteRunner";
 
 /**
  * Parse `mocha --reporter-options OPTIONS string.
@@ -59,6 +60,7 @@ commander
     .option("-C, --capability <name[=value]>", "required browser capability", collectCapabilities)
     .option("-O, --reporter-options <k=v,k2=v2,...>", "reporter-specific options")
     .option("-R, --reporter <name>", "specify the reporter to use", "spec")
+    .option("-t, --timeout <ms>", "set test-case timeout in milliseconds", 2000)
     .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
     .option("-g, --grep <pattern>", "only run tests/suites that match pattern");
 
@@ -72,10 +74,11 @@ if (args.length < 1) {
 
 const url = commander.args.shift()!;
 const cliOptions = commander.opts();
-const options = {
+const options: Options = {
     reporter: cliOptions.reporter,
     reporterOptions: parseReporterOptions(cliOptions.reporterOptions),
     grep: cliOptions.grep,
+    timeout: cliOptions.timeout,
     captureConsoleLog: cliOptions.captureConsoleLog
 };
 

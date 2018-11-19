@@ -8,6 +8,11 @@ export interface RemoteRunnerOptions {
     delay?: boolean;
 
     /**
+     * Set test-case timeout in milliseconds
+     */
+    timeout?: number;
+
+    /**
      * Run only tests than name matches `grep` expression.
      */
     grep?: string | RegExp;

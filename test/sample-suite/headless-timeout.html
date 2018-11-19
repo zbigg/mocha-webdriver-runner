@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Webdriver Tests</title>
+    <link href="../../node_modules/mocha/mocha.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="mocha"></div>
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script src="../../node_modules/chai/chai.js"></script>
+    <script src="../../dist/mocha-webdriver-client.js"></script>
+    <script>
+        mocha.setup({
+            ui: "bdd"
+        });
+        MochaWebdriverClient.install(mocha);
+    </script>
+    <script>
+        describe("timeout support", function () {
+            it("long test", function (done) {
+                setTimeout(done, 2200);
+            });
+        })
+    </script>
+    <script>
+        mocha.checkLeaks();
+        mocha.run();
+    </script>
+</body>
+
+</html>

@@ -15,7 +15,7 @@ export interface Options extends RemoteRunnerOptions {
      * * name of CommonJS module, which default export should be constructor of
      *   compliant `Mocha.Reporter` instance
      */
-    reporter?: string | (new () => Mocha.Reporter);
+    reporter?: string | (new (runner: Mocha.Runner) => Mocha.reporters.Base);
 
     /**
      * Reporter options object.
@@ -79,7 +79,8 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
                         type: "mocha-run",
                         mochaOptions: {
                             grep: options.grep,
-                            captureConsoleLog: captureConsoleLog
+                            captureConsoleLog: captureConsoleLog,
+                            timeout: options.timeout
                         }
                     });
                     break;

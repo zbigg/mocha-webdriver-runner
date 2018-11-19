@@ -1,5 +1,5 @@
 import { MochaRemoteReporter } from "./MochaRemoteReporter";
-import { applyMochaOptions, installGlobalErrorHandlers, runnerBackChannel } from "./RemoteCommon";
+import { applyMochaOptions, installGlobalErrorHandlers, runnerBackChannel, MAGIC_TIMEOUT } from "./RemoteCommon";
 import { MochaReadyMessage, MochaFinishedMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
 
 /**
@@ -25,6 +25,15 @@ export function addMochaSource(mocha: Mocha) {
     const originalMochaRun = mocha.run;
 
     mocha.globals(["__pageEventQueue", "__pageEventCallback", "__driverCommandCallback", "__driverCommandQueue"]);
+
+    //
+    // HACK NOTE:
+    //
+    // Initialize mocha timeout with rubbish, so we can detect not-customized timeouts later.
+    // All tests, hook & suites with timeout() == MAGIC_TIMEOUT have it overriden later in
+    // `applyMochaOptions` when actual timeout value is received from driver.
+    //
+    mocha.timeout(MAGIC_TIMEOUT);
 
     mocha.run = function(fn?: ((failures: number) => void | undefined)): Mocha.Runner {
 
