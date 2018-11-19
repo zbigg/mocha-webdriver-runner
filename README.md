@@ -21,6 +21,8 @@ That's it, have fun.
 $ npm install mocha-webdriver-runner
 ```
 
+(Also ensure that you've got proper drivers or Selenium Grid available, see [Browser Driver](#browser-drivers) section below).
+
 ## Usage
 
 Prepare your tests to run in browser as described on [Mocha website](https://mochajs.org/#running-mocha-in-the-browser).
@@ -34,7 +36,7 @@ and install `MochaWebdriverClient` in global `mocha` instance:
       mocha.setup({ui: "bdd"});
     + MochaWebdriverClient.install(mocha);
 
-Run the test suite:
+Run the test suite against local browser:
 
     SELENIUM_BROWSER=chrome npx mocha-webdriver-runner test/index.html
 
@@ -71,6 +73,23 @@ SELENIUM_REMOTE_URL=http://my-selenium-grid:4444/wd/hub
 ```
 
 See [WebDriverJS Builder](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_Builder.html)
+
+## Browser Drivers
+
+Testing against browser that runs on your desktop requires that proper drivers are installed in your environment.
+
+* Chrome - requires `chromedriver`
+   * available as NPM packet `chromedriver`
+   * documentation & manual download: http://chromedriver.chromium.org/
+* Firefox - requires `geckdriver`
+   * available as NPM packet `geckodriver`
+   * documentation & manual download: https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/
+* Safari - requires `safaridriver`
+   * SafariDriver (now) is installed by default, see https://developer.apple.com/documentation/webkit/testing_with_webdriver_in_safari
+
+For `mocha-webdriver-runner` to work, particular webdriver must be installed somwehere in `PATH`.
+
+Note,  _convenience_ NPM packages -`chromedriver` and `geckdriver` - install them it to `./node_modules/.bin`, so if you run your tests via npm drivers are found automagically.
 
 ## API
 
