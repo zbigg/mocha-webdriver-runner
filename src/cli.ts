@@ -52,6 +52,17 @@ function collectCapabilities(val: string, capabilities: any) {
     set(capabilities, key, value);
     return capabilities;
 }
+
+function looksLikeUrl(val: string) {
+    return val.startsWith("http:") || val.startsWith("https:") || val.startsWith("file:");
+}
+
+function createLocalFileUrl(testPagePath: string) {
+    const absoluteTestPagePath = path.resolve(process.cwd(), testPagePath);
+    return `file://${absoluteTestPagePath}`;
+}
+
+
 const version = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8")).version;
 
 commander
@@ -72,7 +83,13 @@ if (args.length < 1) {
     throw new Error("mocha-webdriver-runer: URL needed");
 }
 
-const url = commander.args.shift()!;
+const mainScript = commander.args.shift()!;
+
+const url = looksLikeUrl(mainScript) ? mainScript : createLocalFileUrl(mainScript);
+
+if (process.env.SELENIUM_REMOTE_URL && url.startsWith("file:")) {
+    console.warn(`mocha-webdriver-runner: warning: remote selenium nodes usually don't work with file:// urls`);
+}
 const cliOptions = commander.opts();
 const options: Options = {
     reporter: cliOptions.reporter,
