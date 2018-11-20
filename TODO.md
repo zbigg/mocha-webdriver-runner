@@ -2,13 +2,6 @@
 
 * `dist/mocha-webdriver-client.js` API is too long
 
-* simplyfy mocha parameter passing -> they can be send as query-string args, so
-  HTML
-    * we can hijack mocha.setup only if `?mocha-webdriver-runner=true`
-    * less HTML boilerplate: only `<script>` with `mocha-webdriver-client.js`
-    * same HTML can run in manual and webdriver-driven mode
-    * not sure how it will work with `file:` URLs
-
 * auto mode (branch `auto-mode`)
     * usage: --auto [test files.s]
     * generates temporary html (.mocha-webdriver-runner-test-$$$.html)

@@ -1,31 +1,47 @@
 import { MochaRemoteReporter } from "./MochaRemoteReporter";
-import { applyMochaOptions, installGlobalErrorHandlers, runnerBackChannel, MAGIC_TIMEOUT } from "./RemoteCommon";
-import { MochaReadyMessage, MochaFinishedMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
+import {
+    applyMochaOptions,
+    installGlobalErrorHandlers,
+    runnerBackChannel,
+    MAGIC_TIMEOUT
+} from "./RemoteCommon";
+import {
+    MochaReadyMessage,
+    MochaFinishedMessage,
+    RemoteRunnerMessage,
+    RemoteRunnerOptions
+} from "./RemoteRunnerProtocol";
+
+export let queryStringRunnerOptions: RemoteRunnerOptions | undefined;
+
+import * as qs from "qs";
 
 /**
  * Adds mocha instance which will send test events, when ran.
  *  - use [[MochaWebdriverReporter]] to gather events
  *  - sends events to [[runRemoteMochaTest]]
  *
+ * Note, default `Mocha` instance i.e `(global|window|self).mocha` is added by default, so
+ * there is no reason to use this funciton manually, see [[initializeMochaWebDriverClient]].
+ *
  * May be used both in "main" thread or in web worker thread. When executed in worker, it's
  * expected that worker instance in main thread is also registered for forwarding using
  * [[addWorkerSource]].
- *
- * Example:
- *
- *     mocha.setup(...);
- *     MochaWebdriverClient.addMochaSource(mocha);
- *     // load tests
- *     mocha.run();
  */
 export function addMochaSource(mocha: Mocha) {
     installGlobalErrorHandlers();
 
     mocha.reporter(MochaRemoteReporter as any);
-    const originalMochaRun = mocha.run;
-
     mocha.globals(["__pageEventQueue", "__pageEventCallback", "__driverCommandCallback", "__driverCommandQueue"]);
 
+    if (queryStringRunnerOptions !== undefined) {
+        applyMochaOptions(mocha, queryStringRunnerOptions);
+    } else {
+        delayMochaRun(mocha);
+    }
+}
+
+export function delayMochaRun(mocha: Mocha) {
     //
     // HACK NOTE:
     //
@@ -35,8 +51,8 @@ export function addMochaSource(mocha: Mocha) {
     //
     mocha.timeout(MAGIC_TIMEOUT);
 
+    const originalMochaRun = mocha.run;
     mocha.run = function(fn?: ((failures: number) => void | undefined)): Mocha.Runner {
-
         runnerBackChannel.addEventListener("message", event => {
             const message = event.data as RemoteRunnerMessage;
             if (message && message.type === "mocha-run") {
@@ -53,12 +69,50 @@ export function addMochaSource(mocha: Mocha) {
             }
         });
 
+        runnerBackChannel.postMessage(<MochaReadyMessage>{
+            type: "mocha-ready"
+        });
+
         return undefined!;
     };
+}
 
-    runnerBackChannel.postMessage(<MochaReadyMessage>{
-        type: "mocha-ready"
-    });
+/**
+ * Initialize Mocha Webdriver Browser side.
+ *
+ * Checks `window.location.search` for specific `RemoteRunnerOptions` and if
+ * `useMochaWebDriverRunner` flag is detected applies them to default `mocha` instance.
+ */
+export function initializeMochaWebDriverClient() {
+    if (typeof window !== "undefined") {
+        const queryString = window.location.search;
+        if (!queryString) {
+            return;
+        }
+        const parsed = qs.parse(queryString.substr(1));
+        if (!parsed.useMochaWebDriverRunner) {
+            return;
+        }
+        const mochaOptions: RemoteRunnerOptions = {};
+        if (typeof parsed.timeout === "string") {
+            mochaOptions.timeout = parseInt(parsed.timeout, 10);
+        }
+        if (typeof parsed.grep === "string") {
+            mochaOptions.grep = parsed.grep;
+        }
+        if (typeof parsed.captureConsoleLog === "string") {
+            mochaOptions.captureConsoleLog = parsed.captureConsoleLog !== "false";
+        }
+        if (typeof parsed.captureConsoleLog === "string") {
+            mochaOptions.captureConsoleLog = parsed.captureConsoleLog !== "";
+        }
+
+        queryStringRunnerOptions = mochaOptions;
+    }
+
+    if (typeof mocha !== "undefined") {
+        addMochaSource(mocha);
+    }
 }
 
 /**

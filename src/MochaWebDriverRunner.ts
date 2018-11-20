@@ -2,6 +2,8 @@ import { Builder, WebDriver, Capabilities } from "selenium-webdriver";
 import { WebDriverMessagePort } from "./WebDriverMessagePort";
 import { Options, runRemoteMochaTest } from "./MochaRemoteRunner";
 
+import * as querystring from "querystring";
+
 export async function withWebDriver<T>(capabilities: Object | Capabilities, test: (driver: WebDriver) => T) {
     let theDriver: WebDriver | undefined;
     return Promise.resolve(
@@ -46,10 +48,34 @@ export async function runMochaWebDriverTest(
     }
 
     options = options || {};
+    const passOptionsWithQueryString = true;
+
+    if (passOptionsWithQueryString) {
+        const queryStringParams: any = {
+            useMochaWebDriverRunner: 1
+        };
+        if (options.captureConsoleLog !== undefined) {
+            queryStringParams.captureConsoleLog = options.captureConsoleLog;
+        }
+        if (options.delay !== undefined) {
+            queryStringParams.delay = options.delay;
+        }
+        if (options.timeout !== undefined) {
+            queryStringParams.timeout = options.timeout;
+        }
+        if (options.grep !== undefined) {
+            queryStringParams.grep = options.grep;
+        }
+        const delimiter = url.indexOf('?') === -1 ? '?' : '&';
+        url = url + delimiter + querystring.stringify(queryStringParams);
+    }
 
     await webDriver.get(url);
 
     const messagePort = new WebDriverMessagePort(webDriver);
 
-    return runRemoteMochaTest(messagePort, options);
+    return runRemoteMochaTest(messagePort, {
+        ...options,
+        clientWaitsForOptions: !passOptionsWithQueryString
+    });
 }

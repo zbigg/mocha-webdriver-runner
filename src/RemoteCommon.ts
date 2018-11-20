@@ -18,7 +18,6 @@ export const runnerBackChannel = inWebWorkerContext()
     : new BrowserMessagePort();
 
 export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
-
     if (options.captureConsoleLog) {
         installConsoleLogForwarder();
     }
@@ -29,30 +28,32 @@ export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
 
     {
         const timeout = options.timeout !== undefined ? options.timeout : 2000;
+        if (mocha.suite.timeout() === MAGIC_TIMEOUT) {
+            overrideDefaultMagicTimeout(mocha.suite, timeout);
+        }
         mocha.timeout(timeout);
-        const overrideMagicTimeout = (obj: Mocha.Runnable | Mocha.Suite) => {
-            if (obj.timeout() === MAGIC_TIMEOUT) {
-                obj.timeout(timeout);
-            }
-        }
-
-        const setTimeoutRecursive = (suite: Mocha.Suite) => {
-            overrideMagicTimeout(suite);
-
-            suite.tests.forEach(overrideMagicTimeout);
-            (suite as any)._beforeEach.forEach(overrideMagicTimeout);
-            (suite as any)._beforeAll.forEach(overrideMagicTimeout);
-            (suite as any)._afterEach.forEach(overrideMagicTimeout);
-            (suite as any)._afterAll.forEach(overrideMagicTimeout);
-
-            suite.suites.forEach(subSuite => {
-                setTimeoutRecursive(subSuite);
-            });
-        }
-        setTimeoutRecursive(mocha.suite);
     }
 }
 
+export function overrideDefaultMagicTimeout(suite: Mocha.Suite, timeout: number) {
+    const overrideMagicTimeout = (obj: Mocha.Runnable | Mocha.Suite) => {
+        if (obj.timeout() === MAGIC_TIMEOUT) {
+            obj.timeout(timeout);
+        }
+    }
+    overrideMagicTimeout(suite);
+
+    suite.tests.forEach(overrideMagicTimeout);
+    (suite as any)._beforeEach.forEach(overrideMagicTimeout);
+    (suite as any)._beforeAll.forEach(overrideMagicTimeout);
+    (suite as any)._afterEach.forEach(overrideMagicTimeout);
+    (suite as any)._afterAll.forEach(overrideMagicTimeout);
+
+    suite.suites.forEach(subSuite => {
+        overrideDefaultMagicTimeout(subSuite, timeout);
+    });
+
+}
 let consoleLogSenderInstalled = false;
 
 /**

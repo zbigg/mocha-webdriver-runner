@@ -26,6 +26,16 @@ export interface Options extends RemoteRunnerOptions {
      *      * `suiteName: string` - root suite name which defaults to `Mocha Tests`
      */
     reporterOptions?: any;
+
+    /**
+     * If true, mocha in clients waits for `mocha-run` message with options.
+     *
+     * If options are passed with other channel (like query-string), mocha can start immediately
+     * and this flag can be set to `false`.
+     *
+     * @default `true`
+     */
+    clientWaitsForOptions?: boolean;
 }
 
 export function runRemoteMochaTest(messagePort: MessagePort, options: Options): Promise<boolean> {
@@ -75,14 +85,16 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
 
             switch (message.type) {
                 case "mocha-ready":
-                    messagePort.postMessage(<MochaRunMessage>{
-                        type: "mocha-run",
-                        mochaOptions: {
-                            grep: options.grep,
-                            captureConsoleLog: captureConsoleLog,
-                            timeout: options.timeout
-                        }
-                    });
+                    if (options.clientWaitsForOptions !== false) {
+                        messagePort.postMessage(<MochaRunMessage>{
+                            type: "mocha-run",
+                            mochaOptions: {
+                                grep: options.grep,
+                                captureConsoleLog: captureConsoleLog,
+                                timeout: options.timeout
+                            }
+                        });
+                    }
                     break;
                 case "log":
                     if (!captureConsoleLog) {

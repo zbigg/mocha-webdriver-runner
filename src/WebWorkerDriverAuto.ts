@@ -60,23 +60,18 @@ function workerCode() {
             self.importScripts(baseUrl + testUrl);
         });
         mocha.checkLeaks();
-        self.postMessage(<MochaReadyMessage>{ type: "mocha-ready" });
-    }
 
-    function run(options: RemoteRunnerOptions) {
-        MochaWebdriverClient.applyMochaOptions(mocha, options);
         mocha.run(function() {
             self.postMessage(<MochaFinishedMessage>{ type: "mocha-finished" });
         });
     }
 
-    self.onmessage = function(event) {
+    const onMessage = (event: MessageEvent) => {
         const message = event.data as RemoteRunnerMessage;
         try {
             if (message.type === "boostrap-worker") {
                 initialize(message);
-            } else if (message.type === "mocha-run") {
-                run(message.mochaOptions || {});
+                self.removeEventListener('message', onMessage);
             } else {
                 console.log("unknown message received", message);
             }
@@ -98,6 +93,7 @@ function workerCode() {
             });
         }
     };
+    self.addEventListener('message', onMessage);
     self.postMessage({ type: "worker-ready-for-bootstrap" });
 }
 
@@ -201,6 +197,9 @@ export function runWorkerTestsAuto(options: WorkerTestAutoOptions | string[]) {
                 });
                 worker.removeEventListener("error", onError);
                 worker.removeEventListener("message", onMessage);
+
+                // pass control to normal worker handler
+                addWorkerSource(worker);
             } else if (message.type === "mocha-finished") {
                 end();
                 resolve();
@@ -208,9 +207,6 @@ export function runWorkerTestsAuto(options: WorkerTestAutoOptions | string[]) {
         };
         worker.addEventListener("error", onError);
         worker.addEventListener("message", onMessage);
-
-        // pass control to normal worker handler
-        addWorkerSource(worker);
     });
 }
 

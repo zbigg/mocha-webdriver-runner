@@ -1,6 +1,8 @@
 import { runnerBackChannel } from "./RemoteCommon";
-import { UnhandledExceptionMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
+import { UnhandledExceptionMessage, RemoteRunnerMessage, MochaRunMessage } from "./RemoteRunnerProtocol";
 import { buildMessage } from "@zbigg/treesync";
+import { queryStringRunnerOptions } from "./BrowserDriver";
+import { runRemoteMochaTest } from "./MochaRemoteRunner";
 
 /**
  * Adds Web Worker instance which will send test events, when ran.
@@ -21,8 +23,15 @@ export function addWorkerSource(worker: Worker) {
             worker.postMessage(message);
         }
     });
-
+    let firstMessage = true;
     worker.addEventListener("message", event => {
+        if (firstMessage && queryStringRunnerOptions !== undefined) {
+            worker.postMessage(<MochaRunMessage>{
+                type: "mocha-run",
+                mochaOptions: queryStringRunnerOptions
+            });
+            firstMessage = false;
+        }
         const message = event.data as RemoteRunnerMessage;
         runnerBackChannel.postMessage(message);
     });
@@ -34,4 +43,12 @@ export function addWorkerSource(worker: Worker) {
             error: buildMessage(event.error || event.message)
         });
     });
+
+    if (queryStringRunnerOptions === undefined) {
+        runRemoteMochaTest((worker as any as MessagePort), {
+            reporter: "html",
+            captureConsoleLog: false,
+            clientWaitsForOptions: true
+        })
+    }
 }

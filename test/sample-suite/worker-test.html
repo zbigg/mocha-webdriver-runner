@@ -4,14 +4,17 @@
 <head>
     <meta charset="utf-8">
     <title>Mocha Webdriver WebWorker Tests</title>
+    <link href="../../node_modules/mocha/mocha.css" rel="stylesheet">
 </head>
 
 <body>
-     <script src="../../dist/mocha-webdriver-client.js"></script>
-     <script>
-         const worker = new Worker("./worker-test-main.js");
-         MochaWebdriverClient.addWorkerSource(worker);
-     </script>
+    <div id="mocha"></div>
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script src="../../dist/mocha-webdriver-client.js"></script>
+    <script>
+        const worker = new Worker("./worker-test-main.js");
+        MochaWebdriverClient.addWorkerSource(worker);
+    </script>
 </body>
 
 </html>

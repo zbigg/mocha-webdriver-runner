@@ -27,14 +27,10 @@ $ npm install mocha-webdriver-runner
 
 Prepare your tests to run in browser as described on [Mocha website](https://mochajs.org/#running-mocha-in-the-browser).
 
-Add `mocha-webdriver-runner` browser side client:
+Add `mocha-webdriver-runner` browser side client just after normal `mocha.js` `<script>` tag:
 
-     <script src="../node_modules/mocha-webdriver-runner/dist/mocha-webdriver-client.js"></script>
-
-and install `MochaWebdriverClient` in global `mocha` instance:
-
-      mocha.setup({ui: "bdd"});
-    + MochaWebdriverClient.install(mocha);
+       <script src="../node_modules/mocha/mocha.js"></script
+     + <script src="../node_modules/mocha-webdriver-runner/dist/mocha-webdriver-client.js"></script>
 
 Run the test suite against local browser:
 
@@ -43,6 +39,11 @@ Run the test suite against local browser:
     SELENIUM_BROWSER=firefox npx mocha-webdriver-runner test/index.html --reporter=tap
 
 (assuming your tests are in test/index.html).
+
+The HTML test page works in two environments:
+ * normal browser window - HTML report is generated in browser window as usual
+ * when ran through `mocha-webdriver-runner`, report is forwarded to reporter running in node
+   (default is `spec`)
 
 See `package.json` scripts and `test/sample-suite/index-headless.html` for reference.
 

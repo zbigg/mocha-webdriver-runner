@@ -8,7 +8,6 @@ self.importScripts("../../dist/mocha-webdriver-client.js");
 mocha.setup({
     ui: "bdd",
 });
-MochaWebdriverClient.addMochaSource(mocha);
 
 self.importScripts("tests.js");
 
