@@ -1,27 +1,26 @@
 # TODO
 
 * `dist/mocha-webdriver-client.js` API is too long
-* write actual tests
-    * requires API
-    * xunit test can be based on xpath patching
 
-* HTML boilerplate
-    * generate HTML boilerplate on demand
-* temporarily generate HTML boilerplate "on fly"
-* serve files from folder !?
-    * all CLI options are cumbersome ?
-    * shall we detect if url points at file ?
-        * file is js, then autowrap it ?
-        * file is HTML, then just run it ?
-        * options to serve from given folder (needed by workers)
+* simplyfy mocha parameter passing -> they can be send as query-string args, so
+  HTML
+    * we can hijack mocha.setup only if `?mocha-webdriver-runner=true`
+    * less HTML boilerplate: only `<script>` with `mocha-webdriver-client.js`
+    * same HTML can run in manual and webdriver-driven mode
+    * not sure how it will work with `file:` URLs
 
-* auto mode
+* auto mode (branch `auto-mode`)
     * usage: --auto [test files.s]
     * generates temporary html (.mocha-webdriver-runner-test-$$$.html)
     * detects location of mocha and mocha-webdriver-client using require.resolve
     * uses adapted `bootstrap-worker` protocol
     * points browser at temporary file ...
     * ... or serves them automagically!
+
+* automagically serve files from './'
+  * for remote webdriver connections
+  * --serve HOST:PORT
+  * --localtunnell ? - required when yu have browser running on external hosts
 
 * support for `mocha.Runner` options
     * `--fgrep`
