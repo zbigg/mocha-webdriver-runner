@@ -36,5 +36,4 @@
         ```
 
 * common keywords -> capabilities
-    browser --chrome, --firefox, --safari, --edge
     os: --linux, --windows, --mac

@@ -29,6 +29,7 @@ function parseReporterOptions(optionsString?: string) {
     return result;
 }
 
+const globalCapabilities: any = {};
 function collectCapabilities(val: string, capabilities: any) {
     if (!val) {
         throw new Error("capability cannot be empty");
@@ -48,9 +49,8 @@ function collectCapabilities(val: string, capabilities: any) {
             value = JSON.parse(value);
         }
     }
-    capabilities = capabilities || {};
-    set(capabilities, key, value);
-    return capabilities;
+    set(globalCapabilities, key, value);
+    return globalCapabilities;
 }
 
 function looksLikeUrl(val: string) {
@@ -74,6 +74,58 @@ commander
     .option("-t, --timeout <ms>", "set test-case timeout in milliseconds", 2000)
     .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
     .option("-g, --grep <pattern>", "only run tests/suites that match pattern");
+
+const shortcuts: any = {
+    "chrome": {
+        doc: "use Chrome",
+        capabilities: {
+            browserName: "chrome"
+        }
+    },
+    "headless-chrome": {
+        doc: "use headless Chrome",
+        capabilities: {
+            browserName: "chrome",
+            chromeOptions: {
+                args: ["--headless"]
+            }
+        }
+    },
+    "firefox": {
+        doc: "use Firefox",
+        capabilities: {
+            browserName: "firefox"
+        }
+    },
+    "headless-firefox": {
+        doc: "use headless Firefox",
+        capabilities: {
+            browserName: "firefox",
+            "moz:firefoxOptions": {
+                args: ["-headless"]
+            }
+        }
+    },
+    "safari": {
+        doc: "use Safari",
+        capabilities: {
+            browserName: "safari"
+        }
+    },
+    "edge": {
+        doc: "use Edge",
+        capabilities: {
+            browserName: "MicrosoftEdge"
+        }
+    }
+};
+
+for(const name in shortcuts) {
+    const entry = shortcuts[name];
+    commander.option(`--${name}`, entry.doc, function() {
+        Object.assign(globalCapabilities, entry.capabilities)
+    })
+}
 
 commander.parse(process.argv);
 
@@ -99,7 +151,7 @@ const options: Options = {
     captureConsoleLog: cliOptions.captureConsoleLog
 };
 
-runMochaWebDriverTest(commander.capability, url, options).then(result => {
+runMochaWebDriverTest(globalCapabilities, url, options).then(result => {
     if (result) {
         process.exit(0);
     } else {

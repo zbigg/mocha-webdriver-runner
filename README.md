@@ -59,6 +59,17 @@ Value may be plain string, or JSON value, examples:
 -C chromeOptions.args='["--headless", "--window-size=300,300"]'
 ```
 
+Convenience shortcuts:
+
+| Shortcut option | Resolves to
+| -               | ----
+| `--headless-chrome`  | `-C browserName=chrome -C chromeOptions.args='["--headless"]'`
+| `--chrome`           | `-C browserName=chrome`
+| `--headless-firefox` | `-C browserName=firefox -C moz:firefoxOptions.args='["-headless"]'`
+| `--firefox`          | `-C browserName=firefox`
+| `--edge`             | `-C browserName=MicrosoftEdge`
+| `--safari`           | `-C browserName=safari`
+
 Useful links:
 
 -   [Selenium Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
