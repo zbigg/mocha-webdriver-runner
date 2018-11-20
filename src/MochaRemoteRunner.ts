@@ -48,7 +48,7 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
             } else if (event.type === "suite") {
                 runner!.emit("suite", event.suite);
             } else if (event.type === "suite end") {
-                runner!.emit("suite end");
+                runner!.emit("suite end", event.suite);
             } else if (event.type === "test") {
                 runner!.emit("test", event.test);
             } else if (event.type === "test end") {

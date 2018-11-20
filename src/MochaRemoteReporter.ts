@@ -40,8 +40,11 @@ export class MochaRemoteReporter {
             });
         });
 
-        runner.on("suite end", function() {
-            forwardRunnerEvent({ type: "suite end" });
+        runner.on("suite end", function(suite) {
+            forwardRunnerEvent({
+                type: "suite end",
+                suite
+            });
         });
 
         runner.on("test", function(test) {
