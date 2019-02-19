@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import * as Mocha from 'mocha';
+import * as Mocha from "mocha";
 import * as fs from "fs";
 import * as xpath from "xpath";
 // import * as xmldom from 'xmldom';
@@ -30,8 +30,7 @@ describe("MochaWebdriverRunner", function() {
                 output: xunitTmpFile,
                 suiteName: "Test Suite Name"
             }
-
-        }
+        };
         beforeEach(function() {
             if (fs.existsSync(xunitTmpFile)) {
                 fs.unlinkSync(xunitTmpFile);
@@ -54,8 +53,9 @@ describe("MochaWebdriverRunner", function() {
             const suiteElement = suiteResult[0] as Element;
             assert.equal(suiteElement.nodeName, "testsuite");
             assert.equal(suiteElement.getAttribute("name"), "Test Suite Name");
+
             assert.equal(suiteElement.getAttribute("tests"), "9");
-            assert.equal(suiteElement.getAttribute("failures"), "2");
+            assert.equal(suiteElement.getAttribute("errors"), "2");
             assert.equal(suiteElement.getAttribute("skipped"), "2");
 
             const tests = xpath.select("//testcase", suiteElement);
@@ -106,6 +106,6 @@ describe("MochaWebdriverRunner", function() {
                 }
             );
             assert.equal(testResult, true);
-        })
-    })
+        });
+    });
 });

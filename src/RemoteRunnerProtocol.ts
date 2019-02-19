@@ -89,6 +89,7 @@ export interface MochaRunnerEvent {
     err?: Error;
     failures?: number;
     passes?: number;
+    stats?: any;
 }
 
 export interface MochaRunnerEventMessage {

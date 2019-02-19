@@ -52,6 +52,13 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
         function processRunnerEvent(event: MochaRunnerEvent) {
             if (event.type === "start") {
                 runner = new mocha.Runner(event.suite!, options.delay === true);
+                runner.stats = {
+                    suites: 0,
+                    tests: 0,
+                    passes: 0,
+                    pending: 0,
+                    failures: 0
+                };
                 reporter = new reporterConstructor(runner, options);
                 runner.emit("start");
                 started = true;
@@ -68,6 +75,7 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
             } else if (event.type === "fail") {
                 runner!.emit("fail", event.test, event.err);
             } else if (event.type === "end") {
+                Object.assign(runner!.stats, event.stats || {});
                 runner!.emit("end");
                 end(event.failures || 0);
             } else if (event.type === "pending") {

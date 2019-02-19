@@ -1,11 +1,9 @@
 import {
-    RemoteRunnerOptions,
     RemoteRunnerMessage,
     AbortedMessage,
     UnhandledExceptionMessage,
     MochaRunnerEvent,
     BootstrapWorkerMessage,
-    MochaReadyMessage,
     MochaFinishedMessage
 } from "./RemoteRunnerProtocol";
 import { installGlobalErrorHandlers, installConsoleLogForwarder, runnerBackChannel } from "./RemoteCommon";
@@ -21,7 +19,7 @@ declare global {
 }
 
 function workerCode() {
-    const MAGIC_TIMEOUT = -133;
+    const MAGIC_TIMEOUT = 312345678;
     const DEFAULT_BOOTSTRAP_SCRIPTS = [
         "../node_modules/mocha/mocha.js",
         "../node_modules/mocha-webdriver-runner/dist/mocha-webdriver-client.js"
@@ -94,7 +92,7 @@ function workerCode() {
         }
     };
     self.addEventListener('message', onMessage);
-    self.postMessage({ type: "worker-ready-for-bootstrap" });
+    self.postMessage({type: "worker-ready-for-bootstrap"});
 }
 
 export interface WorkerTestAutoOptions {
@@ -120,6 +118,7 @@ export interface WorkerTestAutoOptions {
      */
     bootstrapScripts?: string[];
 }
+
 /**
  * Run `tests` under Mocha in WebWorker.
  *
@@ -156,7 +155,7 @@ export function runWorkerTestsAuto(options: WorkerTestAutoOptions | string[]) {
             worker.postMessage(command);
         }
 
-        const onError = (event: ErrorEvent) => {
+        const onWorkerError = (event: ErrorEvent) => {
             if (!firstMessageReceived || !bootstraped) {
                 worker.terminate();
                 const message = firstMessageReceived
@@ -176,7 +175,7 @@ export function runWorkerTestsAuto(options: WorkerTestAutoOptions | string[]) {
                 });
             }
         };
-        const onMessage = (event: MessageEvent) => {
+        const onWorkerMessage = (event: MessageEvent) => {
             if (!firstMessageReceived) {
                 firstMessageReceived = true;
             }
@@ -195,8 +194,8 @@ export function runWorkerTestsAuto(options: WorkerTestAutoOptions | string[]) {
                     bootstrapScripts: actualOptions.bootstrapScripts,
                     tests: actualOptions.tests
                 });
-                worker.removeEventListener("error", onError);
-                worker.removeEventListener("message", onMessage);
+                worker.removeEventListener("error", onWorkerError);
+                worker.removeEventListener("message", onWorkerMessage);
 
                 // pass control to normal worker handler
                 addWorkerSource(worker);
@@ -205,8 +204,8 @@ export function runWorkerTestsAuto(options: WorkerTestAutoOptions | string[]) {
                 resolve();
             }
         };
-        worker.addEventListener("error", onError);
-        worker.addEventListener("message", onMessage);
+        worker.addEventListener("error", onWorkerError);
+        worker.addEventListener("message", onWorkerMessage);
     });
 }
 
