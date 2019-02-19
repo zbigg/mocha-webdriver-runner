@@ -70,7 +70,7 @@ browserConfigurations.forEach(entry => {
                 assert.equal(suiteElement.nodeName, "testsuite");
                 assert.equal(suiteElement.getAttribute("name"), "Test Suite Name");
                 assert.equal(suiteElement.getAttribute("tests"), "9");
-                assert.equal(suiteElement.getAttribute("failures"), "2");
+                assert.equal(suiteElement.getAttribute("errors"), "2");
                 assert.equal(suiteElement.getAttribute("skipped"), "2");
 
                 const tests = xpath.select("//testcase", suiteElement);

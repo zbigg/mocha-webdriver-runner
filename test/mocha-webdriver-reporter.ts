@@ -41,9 +41,10 @@ describe("MochaWebDriverReporter", function() {
         });
         mocha.run((failures: number) => {
             failures.should.equal(2);
-            events.should.include.something.that.deep.equals({
-                type: "end", failures: 2, passes: 5
-            });
+            const lastEvent = events[events.length-1];
+            assert.equal(lastEvent.type, 'end');
+            assert.equal(lastEvent.failures, 2);
+            assert.equal(lastEvent.passes, 5);
             done();
         });
     });

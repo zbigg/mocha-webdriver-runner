@@ -7,7 +7,7 @@ declare let self: Worker & {
     importScripts(..._scripts: string[]): void;
 };
 
-export const MAGIC_TIMEOUT = -133;
+export const MAGIC_TIMEOUT = 312345678;
 
 export function inWebWorkerContext() {
     return typeof self !== "undefined" && typeof self.importScripts !== "undefined";
@@ -28,9 +28,7 @@ export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
 
     {
         const timeout = options.timeout !== undefined ? options.timeout : 2000;
-        if (mocha.suite.timeout() === MAGIC_TIMEOUT) {
-            overrideDefaultMagicTimeout(mocha.suite, timeout);
-        }
+        overrideDefaultMagicTimeout(mocha.suite, timeout);
         mocha.timeout(timeout);
     }
 }
@@ -88,7 +86,14 @@ export function installConsoleLogForwarder() {
     console.error = runnerLogForwarder("error");
 }
 
+let globalErrorHandlersInstalled = false;
+
 export function installGlobalErrorHandlers() {
+    if (globalErrorHandlersInstalled) {
+        return;
+    }
+    globalErrorHandlersInstalled = true;
+
     self.addEventListener("unhandledrejection", event => {
         runnerBackChannel.postMessage({
             type: "err-unhandled-exception",

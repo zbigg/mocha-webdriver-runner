@@ -40,7 +40,7 @@
     "commander": "^2.20.0",
     "events": "^3.0.0",
     "lodash": "^4.17.15",
-    "mocha": "^5.2.0",
+    "mocha": "^6.2.0",
     "selenium-webdriver": "^4.0.0-alpha.4"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "@types/chai-things": "^0.0.33",
     "@types/events": "3.0.0",
     "@types/lodash": "^4.14.136",
-    "@types/mocha": "^5.2.5",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.6.8",
     "@types/qs": "^6.5.3",
     "@types/selenium-webdriver": "^4.0.1",
