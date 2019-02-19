@@ -47,10 +47,10 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
   integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
 
-"@types/events@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
-  integrity sha512-KEIlhXnIutzKwRbQkGWb/I4HFqBuUykAdHgDED6xqwXJfONCjF5VoE0cXEiurh3XauygxzeDzgtXUqvLkxFzzA==
+"@types/events@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
+  integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
 "@types/json5@^0.0.29":
   version "0.0.29"
@@ -67,15 +67,10 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.6.tgz#b8622d50557dd155e9f2f634b7d68fd38de5e94b"
   integrity sha512-1axi39YdtBI7z957vdqXI4Ac25e7YihYQtJa+Clnxg1zTJEaIRbndt71O3sP4GAMgiAm0pY26/b9BrY4MR/PMw==
 
-"@types/node@*":
+"@types/node@*", "@types/node@^11.9.4":
   version "11.9.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.9.4.tgz#ceb0048a546db453f6248f2d1d95e937a6f00a14"
   integrity sha512-Zl8dGvAcEmadgs1tmSPcvwzO1YRsz38bVJQvH1RvRqSR9/5n61Q1ktcDL0ht3FXWR+ZpVmXVwN1LuH4Ax23NsA==
-
-"@types/node@^10.11.2":
-  version "10.12.26"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.26.tgz#2dec19f1f7981c95cb54bab8f618ecb5dc983d0e"
-  integrity sha512-nMRqS+mL1TOnIJrL6LKJcNZPB8V3eTfRo9FQA2b5gDvrHurC8XbSA86KNe0dShlEL7ReWJv/OU9NL7Z0dnqWTg==
 
 "@types/qs@^6.5.1":
   version "6.5.1"
@@ -87,10 +82,10 @@
   resolved "https://registry.yarnpkg.com/@types/selenium-webdriver/-/selenium-webdriver-3.0.15.tgz#024c24051c3798e9a0cf5cceb1c893140df1bc31"
   integrity sha512-5nh8/K2u9p4bk95GGCJB7KBvewaB0TUziZ9DTr+mR2I6RoO4OJVqx7rxK83hs2J1tomwtCGkhiW+Dy8EUnfB+Q==
 
-"@types/sinon@^5.0.3":
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-5.0.7.tgz#0d9f89dd0c9988c4f1505a92a3a324ee7bdb18a6"
-  integrity sha512-opwMHufhUwkn/UUDk35LDbKJpA2VBsZT8WLU8NjayvRLGPxQkN+8XmfC2Xl35MAscBE8469koLLBjaI3XLEIww==
+"@types/sinon@^7.0.6":
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-7.0.6.tgz#dbe6c059dd4e2fd2b8e8fc3ed051d4706c84c63e"
+  integrity sha512-ldQl2p7kyCXHhr//5sQCu9jWgSiDbYuCD5dUp53r/z8T8jmgKpANpy4vqjbdho9P2ldFaQC/gpW31hch+oQ0IQ==
 
 "@zbigg/treesync@^0.3.0":
   version "0.3.0"
