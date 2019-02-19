@@ -90,7 +90,8 @@ export class MochaRemoteReporter {
             forwardRunnerEvent({
                 type: "end",
                 passes: passes,
-                failures: failures
+                failures: failures,
+                stats: runner.stats
             });
         });
     }
