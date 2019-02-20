@@ -1032,10 +1032,10 @@ fwd-stream@^1.0.4:
   dependencies:
     readable-stream "~1.0.26-4"
 
-geckodriver@^1.14.1:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/geckodriver/-/geckodriver-1.15.0.tgz#6b1871c667d913f15d491fe39684332b57b0e1fb"
-  integrity sha512-nJjW44Xu4tU+kxJWwPzztZtigEH/3XHzU/gdzvyLYywS8bV6fFvB0OU/Nxz1mTMeGiByYferrDtoNOs5UIbheQ==
+geckodriver@^1.15.1:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/geckodriver/-/geckodriver-1.15.1.tgz#1da88e3d80616a6d73d5d4f1241142d066763554"
+  integrity sha512-VJhDWnnUoRkvjnDyPPFKf9Q8/tlqrMoggTZIX/yFZGdGE/XjqkyS7L2Q1M93QPBOwW+xHZ0D7XfQzcw4pvHMXQ==
   dependencies:
     adm-zip "0.4.11"
     bluebird "3.4.6"
