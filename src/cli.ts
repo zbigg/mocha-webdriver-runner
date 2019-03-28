@@ -151,10 +151,15 @@ const options: Options = {
     captureConsoleLog: cliOptions.captureConsoleLog
 };
 
-runMochaWebDriverTest(globalCapabilities, url, options).then(result => {
-    if (result) {
-        process.exit(0);
-    } else {
+runMochaWebDriverTest(globalCapabilities, url, options)
+    .then(result => {
+        if (result) {
+            process.exit(0);
+        } else {
+            process.exit(1);
+        }
+    }).catch(error => {
+        console.error(`mocha-webdriver-runner: unexpected error: ${error}`);
+        console.error(error);
         process.exit(1);
-    }
-});
+    })
