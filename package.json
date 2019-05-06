@@ -56,7 +56,7 @@
     "chai": "^4.2.0",
     "chai-things": "^0.2.0",
     "chromedriver": "^2.43.1",
-    "geckodriver": "^1.15.1",
+    "geckodriver": "^1.16.2",
     "http-server": "^0.11.1",
     "install": "^0.12.1",
     "qs": "^6.5.2",
