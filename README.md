@@ -56,14 +56,14 @@ Value may be plain string, or JSON value, examples:
 -C browserName=firefox
 -C moz:firefoxOptions.args='["-headless"]'
 -C browserName=chrome
--C chromeOptions.args='["--headless", "--window-size=300,300"]'
+-C goog:chromeOptions.args='["--headless", "--window-size=300,300"]'
 ```
 
 Convenience shortcuts:
 
 | Shortcut option | Resolves to
 | -               | ----
-| `--headless-chrome`  | `-C browserName=chrome -C chromeOptions.args='["--headless"]'`
+| `--headless-chrome`  | `-C browserName=chrome -C goog:chromeOptions.args='["--headless"]'`
 | `--chrome`           | `-C browserName=chrome`
 | `--headless-firefox` | `-C browserName=firefox -C moz:firefoxOptions.args='["-headless"]'`
 | `--firefox`          | `-C browserName=firefox`

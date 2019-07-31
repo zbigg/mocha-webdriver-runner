@@ -16,7 +16,7 @@ class NullReporter extends Mocha.reporters.Base {
 describe("MochaWebdriverRunner", function() {
     const defaultCapabilities: any = {
         browserName: "chrome",
-        chromeOptions: {
+        "goog:chromeOptions": {
             args: ["--headless", "--window-size=300,300"]
         }
     };

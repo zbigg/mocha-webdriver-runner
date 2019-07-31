@@ -86,7 +86,7 @@ const shortcuts: any = {
         doc: "use headless Chrome",
         capabilities: {
             browserName: "chrome",
-            chromeOptions: {
+            "goog:chromeOptions": {
                 args: ["--headless"]
             }
         }
