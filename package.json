@@ -39,7 +39,7 @@
     "@zbigg/treesync": "^0.3.0",
     "commander": "^2.18.0",
     "events": "^3.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "mocha": "^5.2.0",
     "selenium-webdriver": "^4.0.0-alpha.4"
   },
@@ -47,7 +47,7 @@
     "@types/chai": "^4.1.5",
     "@types/chai-things": "^0.0.33",
     "@types/events": "3.0.0",
-    "@types/lodash": "^4.14.117",
+    "@types/lodash": "^4.14.136",
     "@types/mocha": "^5.2.5",
     "@types/node": "^11.9.4",
     "@types/qs": "^6.5.1",
