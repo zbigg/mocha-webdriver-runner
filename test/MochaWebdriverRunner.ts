@@ -78,7 +78,7 @@ browserConfigurations.forEach(entry => {
             }
 
             it("generates correct xunit output from browser test", async function() {
-                this.timeout(10000);
+                this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
                     "file://" + __dirname + "/sample-suite/index-headless.html",
@@ -88,7 +88,7 @@ browserConfigurations.forEach(entry => {
                 xunitSuiteAsserts();
             });
             it("generates correct xunit output from worker auto test", async function() {
-                this.timeout(10000);
+                this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
                     "file://" + __dirname + "/sample-suite/worker-test-auto.html",
@@ -99,10 +99,10 @@ browserConfigurations.forEach(entry => {
             });
         });
         describe("timeout support", function() {
-            this.timeout(22000);
+            this.timeout(42000);
 
             it("fails on timeout", async function() {
-                this.timeout(10000);
+                this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
                     "file://" + __dirname + "/sample-suite/headless-timeout.html",
@@ -113,7 +113,7 @@ browserConfigurations.forEach(entry => {
                 assert.equal(testResult, false);
             });
             it("supports timeout override", async function() {
-                this.timeout(10000);
+                this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
                     "file://" + __dirname + "/sample-suite/headless-timeout.html",
