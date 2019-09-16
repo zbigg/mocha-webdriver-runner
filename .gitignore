@@ -4,3 +4,6 @@ dist/
 .rpt2_cache/
 node_modules/
 mocha-webdriver-runner*.tgz
+lib-cov/
+.nyc_output/
+coverage.
