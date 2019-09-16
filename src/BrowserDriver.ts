@@ -59,6 +59,7 @@ export function delayMochaRun(mocha: Mocha) {
                 applyMochaOptions(mocha, message.mochaOptions || {});
 
                 originalMochaRun.call(mocha, (failures: number) => {
+
                     runnerBackChannel.postMessage(<MochaFinishedMessage>{
                         type: "mocha-finished"
                     });

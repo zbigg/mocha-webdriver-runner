@@ -1,6 +1,6 @@
 import { WebWorkerMessagePort } from "./WebWorkerMessagePort";
 import { BrowserMessagePort } from "./BrowserMessagePort";
-import { RemoteRunnerOptions, LogMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
+import { RemoteRunnerOptions, LogMessage } from "./RemoteRunnerProtocol";
 import { buildMessage } from "@zbigg/treesync";
 
 declare let self: Worker & {

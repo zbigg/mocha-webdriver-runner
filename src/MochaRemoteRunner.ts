@@ -1,8 +1,10 @@
 import * as mocha from "mocha";
+import * as fs from "fs";
 import { RemoteRunnerOptions, MochaRunnerEvent, RemoteRunnerMessage, MochaRunMessage } from "./RemoteRunnerProtocol";
 import { createMochaStateSynchronizer } from "./suite-synchronizer";
 import { decodeMessage } from "@zbigg/treesync";
 
+import * as uuidv4 from "uuid/v4";
 /**
  * Mocha Webdriver Runner options.
  */
@@ -122,6 +124,12 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
                     break;
                 case "mocha-runner-event":
                     processRunnerEvent(synchronizer.decodePacket(message.event));
+                    break;
+                case "coverage-result":
+                    const coverage = decodeMessage(message.coverage);
+                    console.log("MochaRemoteRunner GCR", Object.keys(coverage));
+                    fs.mkdirSync(".nyc_output", { recursive: true });
+                    fs.writeFileSync(`./.nyc_output/${uuidv4()}.json`, JSON.stringify(coverage), "utf-8");
                     break;
                 case "err-aborted":
                     {

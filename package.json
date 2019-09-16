@@ -1,73 +1,91 @@
 {
-  "name": "mocha-webdriver-runner",
-  "version": "0.5.3",
-  "description": "Run Mocha tests using Selenium WebDriver",
-  "keywords": [
-    "mocha",
-    "webdriverjs",
-    "javascript",
-    "tdd",
-    "browser"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zbigg/mocha-webdriver-runner.git"
-  },
-  "main": "lib/index",
-  "bin": {
-    "mocha-webdriver-runner": "lib/cli.js"
-  },
-  "files": [
-    "lib/*.js",
-    "lib/*.d.ts",
-    "dist/*.js"
-  ],
-  "scripts": {
-    "prepare": "tsc && rollup --config rollup.config.js",
-    "serve": "http-server -p 8099",
-    "test-sample": "npx ts-node ./src/cli.ts http://localhost:8099/test/sample-suite/index-headless.html",
-    "test-sample-chrome": "SELENIUM_BROWSER=chrome npm run test-sample --",
-    "test-sample-firefox": "SELENIUM_BROWSER=firefox npm run test-sample --",
-    "test-sample-safari": "SELENIUM_BROWSER=safari npm run test-sample --",
-    "test": "mocha -r ts-node/register test/*.ts",
-    "watch:test": "npm run test -- --watch-extensions ts --watch",
-    "clean": "rm -rf lib/ dist/"
-  },
-  "author": "zbigg <z.zagorski@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "@zbigg/treesync": "^0.3.0",
-    "commander": "^2.20.0",
-    "events": "^3.0.0",
-    "lodash": "^4.17.15",
-    "mocha": "^6.2.0",
-    "selenium-webdriver": "^4.0.0-alpha.4"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.1.5",
-    "@types/events": "3.0.0",
-    "@types/lodash": "^4.14.136",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^12.6.8",
-    "@types/qs": "^6.5.3",
-    "@types/selenium-webdriver": "^4.0.1",
-    "@types/sinon": "^7.0.13",
-    "chai": "^4.2.0",
-    "chromedriver": "^76.0.0",
-    "geckodriver": "^1.16.2",
-    "http-server": "^0.11.1",
-    "qs": "^6.7.0",
-    "rollup": "^1.17.0",
-    "rollup-plugin-commonjs": "^10.0.1",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-typescript2": "^0.22.1",
-    "sinon": "^7.3.2",
-    "ts-node": "^8.3.0",
-    "tsconfig-paths": "^3.6.0",
-    "tslib": "^1.10.0",
-    "typescript": "^3.5.3",
-    "xmldom": "^0.1.27",
-    "xpath": "^0.0.27"
-  }
+    "name": "mocha-webdriver-runner",
+    "version": "0.5.3",
+    "description": "Run Mocha tests using Selenium WebDriver",
+    "keywords": [
+        "mocha",
+        "webdriverjs",
+        "javascript",
+        "tdd",
+        "browser"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/zbigg/mocha-webdriver-runner.git"
+    },
+    "main": "lib/index",
+    "bin": {
+        "mocha-webdriver-runner": "lib/cli.js"
+    },
+    "files": [
+        "lib/*.js",
+        "lib/*.d.ts",
+        "dist/*.js"
+    ],
+    "scripts": {
+        "prepare": "tsc && nyc instrument lib/ lib-cov/ && cp lib/*.d.ts lib/page-event-queue.js lib-cov/ && rollup --config rollup.config.js",
+        "serve": "http-server -p 8099",
+        "test-sample": "npx ts-node ./src/cli.ts http://localhost:8099/test/sample-suite/index-headless.html",
+        "test-sample-chrome": "SELENIUM_BROWSER=chrome npm run test-sample --",
+        "test-sample-firefox": "SELENIUM_BROWSER=firefox npm run test-sample --",
+        "test-sample-safari": "SELENIUM_BROWSER=safari npm run test-sample --",
+        "test": "mocha -r ts-node/register test/*.ts",
+        "watch:test": "npm run test -- --watch-extensions ts --watch",
+        "clean": "rm -rf lib/ dist/"
+    },
+    "author": "zbigg <z.zagorski@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "@zbigg/treesync": "^0.3.0",
+        "commander": "^2.20.0",
+        "events": "^3.0.0",
+        "lodash": "^4.17.15",
+        "mocha": "^6.2.0",
+        "selenium-webdriver": "^4.0.0-alpha.4",
+        "uuid": "^3.3.2"
+    },
+    "devDependencies": {
+        "@types/chai": "^4.1.5",
+        "@types/events": "3.0.0",
+        "@types/lodash": "^4.14.136",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.6.8",
+        "@types/qs": "^6.5.3",
+        "@types/selenium-webdriver": "^4.0.1",
+        "@types/sinon": "^7.0.13",
+        "@types/uuid": "^3.4.5",
+        "chai": "^4.2.0",
+        "chromedriver": "^76.0.0",
+        "geckodriver": "^1.16.2",
+        "http-server": "^0.11.1",
+        "nyc": "^14.1.1",
+        "qs": "^6.7.0",
+        "rollup": "^1.17.0",
+        "rollup-plugin-commonjs": "^10.0.1",
+        "rollup-plugin-istanbul": "^2.0.1",
+        "rollup-plugin-node-builtins": "^2.1.2",
+        "rollup-plugin-node-resolve": "^5.2.0",
+        "rollup-plugin-typescript2": "^0.22.1",
+        "sinon": "^7.3.2",
+        "ts-node": "^8.3.0",
+        "tsconfig-paths": "^3.6.0",
+        "tslib": "^1.10.0",
+        "typescript": "^3.5.3",
+        "xmldom": "^0.1.27",
+        "xpath": "^0.0.27"
+    },
+    "nyc": {
+        "extension": [
+            ".ts",
+            ".tsx"
+        ],
+        "exclude": [
+            "page-event-queue.*",
+            "test/**/*",
+            "**/*.d.ts"
+        ],
+        "reporter": [
+            "text"
+        ]
+    }
 }
