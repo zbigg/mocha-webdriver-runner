@@ -1,7 +1,9 @@
 import { Runner } from "mocha";
 import { runnerBackChannel } from "./RemoteCommon";
 import { createMochaStateSynchronizer } from "./suite-synchronizer";
-import { MochaRunnerEvent, MochaRunnerEventMessage } from "./RemoteRunnerProtocol";
+import { MochaRunnerEvent, MochaRunnerEventMessage, CoverageResultMessage } from "./RemoteRunnerProtocol";
+import { buildMessage } from "@zbigg/treesync";
+import { getGlobalCoverageInfo } from "./InstanbulPlugin";
 
 /**
  * This reporter sends all events received from `Mocha.Runner` to
@@ -87,6 +89,14 @@ export class MochaRemoteReporter {
         });
 
         runner.on("end", function() {
+            const coverage = getGlobalCoverageInfo();
+            if (coverage) {
+                runnerBackChannel.postMessage(<CoverageResultMessage>{
+                    type: "coverage-result",
+                    coverage: buildMessage(coverage)
+                });
+            }
+
             forwardRunnerEvent({
                 type: "end",
                 passes: passes,

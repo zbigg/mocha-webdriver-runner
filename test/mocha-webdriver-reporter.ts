@@ -4,12 +4,12 @@ import * as Mocha from "mocha";
 import * as chai from "chai";
 const assert = chai.assert;
 
-import * as PageEventQueue from "../src/page-event-queue";
-import { MochaRemoteReporter } from "../src/MochaRemoteReporter";
-import { createMochaStateSynchronizer } from "../src/suite-synchronizer";
-import { RemoteRunnerMessage } from "../src/RemoteRunnerProtocol";
+import * as PageEventQueue from "../lib-cov/page-event-queue";
+import { MochaRemoteReporter } from "../lib-cov/MochaRemoteReporter";
+import { createMochaStateSynchronizer } from "../lib-cov/suite-synchronizer";
+import { RemoteRunnerMessage } from "../lib-cov/RemoteRunnerProtocol";
 
-describe("MochaWebDriverReporter", function() {
+describe.only("MochaWebDriverReporter", function() {
     let sandbox: sinon.SinonSandbox;
 
     beforeEach(function() {
@@ -25,20 +25,21 @@ describe("MochaWebDriverReporter", function() {
         mocha.addFile(__dirname + "/sample-suite/tests.js");
         mocha.reporter(MochaRemoteReporter as any);
         const emitPageEventStub = sandbox.stub(PageEventQueue, "emitPageEvent");
-        const events: any[] = [];
+        const runnerEvents: any[] = [];
         const synchronizer = createMochaStateSynchronizer();
         emitPageEventStub.callsFake((event: MessageEvent) => {
             assert.equal(event.type, "message");
             assert.exists(event.data);
             const message: RemoteRunnerMessage = event.data;
-            assert.equal(message.type, "mocha-runner-event");
+            assert.include(["mocha-runner-event", "coverage-result"], message.type);
             if (message.type === "mocha-runner-event") {
-                events.push(synchronizer.decodePacket(message.event));
+                runnerEvents.push(synchronizer.decodePacket(message.event));
             }
         });
         mocha.run((failures: number) => {
             assert.equal(failures, 2);
-            const lastEvent = events[events.length - 1];
+            //console.log("events", events);
+            const lastEvent = runnerEvents[runnerEvents.length - 1];
             assert.equal(lastEvent.type, "end");
             assert.equal(lastEvent.failures, 2);
             assert.equal(lastEvent.passes, 5);

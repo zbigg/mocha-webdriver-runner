@@ -60,6 +60,11 @@ export interface LogMessage {
     args: SerializationMessage;
 }
 
+export interface CoverageResultMessage {
+    type: "coverage-result",
+    coverage: any;
+}
+
 export interface AbortedMessage {
     type: "err-aborted";
     message: string;
@@ -109,4 +114,5 @@ export type RemoteRunnerMessage =
     | UnhandledExceptionMessage
     | AbortedMessage
     | LogMessage
+    | CoverageResultMessage
     | BootstrapWorkerMessage

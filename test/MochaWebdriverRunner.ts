@@ -5,7 +5,7 @@ import * as xpath from "xpath";
 // import * as xmldom from 'xmldom';
 const xmldom = require("xmldom");
 
-import { runMochaWebDriverTest } from "../src/MochaWebDriverRunner";
+import { runMochaWebDriverTest } from "../lib-cov/MochaWebDriverRunner";
 
 class NullReporter extends Mocha.reporters.Base {
     constructor(runner: Mocha.Runner) {
@@ -77,7 +77,7 @@ browserConfigurations.forEach(entry => {
                 assert.equal(tests.length, 9);
             }
 
-            it("generates correct xunit output from browser test", async function() {
+            it.only("generates correct xunit output from browser test", async function() {
                 this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,

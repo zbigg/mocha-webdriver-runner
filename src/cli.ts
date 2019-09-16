@@ -151,6 +151,12 @@ const options: Options = {
     captureConsoleLog: cliOptions.captureConsoleLog
 };
 
+process.on('unhandledRejection', (error: Error) => {
+    console.error(`mocha-webdriver-runner: unexpected error (unhandled rejection): ${error}`);
+    console.error(error);
+    process.exit(2);
+});
+
 runMochaWebDriverTest(globalCapabilities, url, options)
     .then(result => {
         if (result) {
