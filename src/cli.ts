@@ -7,6 +7,8 @@ import * as path from "path";
 import { set } from "lodash";
 import { runMochaWebDriverTest } from "./MochaWebDriverRunner";
 import { Options } from "./MochaRemoteRunner";
+import { logging, } from "selenium-webdriver";
+import * as _ from "lodash";
 
 /**
  * Parse `mocha --reporter-options OPTIONS string.
@@ -65,15 +67,76 @@ function createLocalFileUrl(testPagePath: string) {
 
 const version = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8")).version;
 
+const DEFAULT_CONFIG_FILE = ".mocha-webdriver-runner.json";
+
+interface WebDriverCliOptions {
+    loggers?: string | string[];
+    logLevel?: string;
+}
+
+interface CliOptions {
+    webDriver?: WebDriverCliOptions;
+    capabilities?: object;
+
+    reporter?: string;
+    reporterOptions?: {[name: string]: string};
+    grep?: string;
+    timeout?: number;
+    captureConsoleLog?: boolean;
+}
+
+const cliOptions: CliOptions = {
+    webDriver: {}
+    capabilities: {},
+    reporter: "spec",
+}
+
+
+function readCliOptions(configFile: string): CliOptions {
+    let optionsRaw: any;
+    try {
+        optionsRaw = JSON.stringify(fs.readFileSync(configFile));
+    } catch(error) {
+        if (configFile !== DEFAULT_CONFIG_FILE) {
+            throw new Error(`unable to read config from '${configFile}': ${error}`);
+        } else {
+            return {};
+        }
+    }
+    return JSON.parse(optionsRaw);
+}
+
+function consumeOptionsFileOption(name: string) {
+    const fromFile = JSON.stringify(fs.readFileSync(name));
+}
+function numberOptionConsumer(name: string) {
+    return (value: string, current: any) => {
+        const intValue = parseInt(value, 10);
+        set(cliOptions, name, intValue);
+    }
+}
+
+function stringOptionConsumer(name: string) {
+    return (value: string, current: any) => {
+        set(cliOptions, name, value);
+        return value;
+    }
+}
+
+function consumeOptionNumber(value: string) {
+    _.set(cliOptions)
+}
+
 commander
     .version(version)
     .usage("[options] URL")
+    .option("-c, --config <FILE>", "config file", stringOptionConsumer("reporter"))
     .option("-C, --capability <name[=value]>", "required browser capability", collectCapabilities)
     .option("-O, --reporter-options <k=v,k2=v2,...>", "reporter-specific options")
-    .option("-R, --reporter <name>", "specify the reporter to use", "spec")
-    .option("-t, --timeout <ms>", "set test-case timeout in milliseconds", 2000)
+    .option("-R, --reporter <name>", "specify the reporter to use", stringOptionConsumer("reporter"))
+    .option("-t, --timeout <ms>", "set test-case timeout in milliseconds", numberOptionConsumer("timeout"))
     .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
-    .option("-g, --grep <pattern>", "only run tests/suites that match pattern");
+    .option("-g, --grep <pattern>", "only run tests/suites that match pattern", stringOptionConsumer("grep"));
 
 const shortcuts: any = {
     "chrome": {
@@ -143,6 +206,14 @@ if (process.env.SELENIUM_REMOTE_URL && url.startsWith("file:")) {
     console.warn(`mocha-webdriver-runner: warning: remote selenium nodes usually don't work with file:// urls`);
 }
 const cliOptions = commander.opts();
+if (cliOptions.options) {
+
+}
+
+
+
+const cliOptions = readCliOptions
+
 const options: Options = {
     reporter: cliOptions.reporter,
     reporterOptions: parseReporterOptions(cliOptions.reporterOptions),
@@ -150,6 +221,21 @@ const options: Options = {
     timeout: cliOptions.timeout,
     captureConsoleLog: cliOptions.captureConsoleLog
 };
+
+process.on('unhandledRejection', (error: Error) => {
+    console.error(`mocha-webdriver-runner: unexpected error (unhandled rejection): ${error}`);
+    console.error(error);
+    process.exit(2);
+});
+
+logging.getLogger("webdriver.http").setLevel(logging.Level.FINER);
+(logging as any).installConsoleHandler();
+
+/*
+logging.getLogger().addHandler(function(foo: any) {
+    console.log("#foo", foo);
+})
+*/
 
 runMochaWebDriverTest(globalCapabilities, url, options)
     .then(result => {

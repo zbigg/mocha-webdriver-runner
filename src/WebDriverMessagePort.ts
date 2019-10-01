@@ -1,7 +1,28 @@
 import { queuePageCommand, fetchPageEvents } from "./page-event-queue";
-import { WebDriver } from "selenium-webdriver";
+import { WebDriver, logging } from "selenium-webdriver";
 import { MessagePortBase } from "./MessagePortBase";
 import { RemoteRunnerMessage } from "./RemoteRunnerProtocol";
+
+export async function dumpDriverLogs(driver: WebDriver) {
+    await driver
+        .manage()
+        .logs()
+        .get(logging.Type.DRIVER)
+        .then(function(entries) {
+            entries.forEach(function(entry) {
+                console.log("[webdriver-driver] %s", entry.level.name, entry.message);
+            });
+        });
+    await driver
+        .manage()
+        .logs()
+        .get(logging.Type.BROWSER)
+        .then(function(entries) {
+            entries.forEach(function(entry) {
+                console.log("[webdriver-browser] %s", entry.level.name, entry.message);
+            });
+        });
+}
 
 /**
  * Node side of Worker-like channel between node and browser context.

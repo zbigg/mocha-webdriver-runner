@@ -1,14 +1,49 @@
-import { Builder, WebDriver, Capabilities } from "selenium-webdriver";
+import { Builder, WebDriver, Capabilities, logging } from "selenium-webdriver";
 import { WebDriverMessagePort } from "./WebDriverMessagePort";
 import { Options, runRemoteMochaTest } from "./MochaRemoteRunner";
 
 import * as querystring from "querystring";
 
-export async function withWebDriver<T>(capabilities: Object | Capabilities, test: (driver: WebDriver) => T) {
+export interface WebDriverOptions {
+    logger?: string | string[];
+    logLevel?: string;
+}
+
+export async function withWebDriver<T>(
+    capabilities: Object | Capabilities,
+    options: WebDriverOptions,
+    test: (driver: WebDriver) => T
+) {
+    let someLoggingEnabled = false;
+    if (options.logLevel !== undefined && options.logger === undefined) {
+        const logLevel = logging.getLevel(options.logLevel);
+        logging.getLogger().setLevel(logLevel);
+        someLoggingEnabled = true;
+    }
+    if (options.logger) {
+        const loggerNames = Array.isArray(options.logger) ? options.logger : [options.logger];
+        const logLevel = logging.getLevel(options.logLevel || "info");
+        for (const name of loggerNames) {
+            logging.getLogger(name).setLevel(logLevel);
+            someLoggingEnabled = true;
+        }
+    }
+
+    if (someLoggingEnabled) {
+        (logging as any).installConsoleHandler();
+    }
+
+    (logging as any).installConsoleHandler();
     let theDriver: WebDriver | undefined;
+    const capabilities2 = capabilities instanceof Capabilities ? capabilities : new Capabilities(capabilities);
+    const loggingPrefs = new logging.Preferences();
+    capabilities2.setLoggingPrefs(loggingPrefs);
+    //loggingPrefs.setLevel(logging.Type.DRIVER, logging.Level.ALL);
+    //loggingPrefs.setLevel(logging.Type.BROWSER, logging.Level.ALL);
+    //loggingPrefs.setLevel(logging.Type.CLIENT, logging.Level.ALL);
     return Promise.resolve(
         new Builder()
-            .withCapabilities(capabilities)
+            .withCapabilities(capabilities2)
             .build()
             .then(async driver => {
                 theDriver = driver;
@@ -39,10 +74,10 @@ export async function withWebDriver<T>(capabilities: Object | Capabilities, test
 export async function runMochaWebDriverTest(
     webDriver: WebDriver | Capabilities,
     url: string,
-    options?: Options
+    options?: Options & { webDriver?: WebDriverOptions }
 ): Promise<boolean> {
     if (!(webDriver instanceof WebDriver)) {
-        return withWebDriver(webDriver, (driver: WebDriver) => {
+        return withWebDriver(webDriver, options && options.webDriver || {}, (driver: WebDriver) => {
             return runMochaWebDriverTest(driver, url, options);
         });
     }
@@ -66,7 +101,7 @@ export async function runMochaWebDriverTest(
         if (options.grep !== undefined) {
             queryStringParams.grep = options.grep;
         }
-        const delimiter = url.indexOf('?') === -1 ? '?' : '&';
+        const delimiter = url.indexOf("?") === -1 ? "?" : "&";
         url = url + delimiter + querystring.stringify(queryStringParams);
     }
 
