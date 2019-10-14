@@ -23,6 +23,11 @@ export interface RemoteRunnerOptions {
      * Defaults to `true`.
      */
     captureConsoleLog?: boolean;
+
+    /**
+     * Global objects captured after test.
+     */
+    globalsToSave?: string[];
 }
 
 /**
@@ -56,15 +61,23 @@ export interface LogMessage {
     type: "log",
     level: string;
 
-    // `console.log` args serialized using `treesync.serialize`.
+    // `console.log` args serialized using `treesync.buildMessage`.
     args: SerializationMessage;
+}
+
+export interface VarDumpMessage {
+    type: "var-dump",
+    name: string;
+
+    // `variable` serialized using `treesync.buildMessage`.
+    value: SerializationMessage;
 }
 
 export interface AbortedMessage {
     type: "err-aborted";
     message: string;
 
-    // `Error` serialized using `treesync.serialize`.
+    // `Error` serialized using `treesync.buildMessage`.
     error: SerializationMessage;
 }
 
@@ -72,7 +85,7 @@ export interface UnhandledExceptionMessage {
     type: "err-unhandled-exception";
     message: string;
 
-    // `Error` serialized using `treesync.serialize`.
+    // `Error` serialized using `treesync.buildMessage`.
     error: SerializationMessage;
 }
 
@@ -109,4 +122,5 @@ export type RemoteRunnerMessage =
     | UnhandledExceptionMessage
     | AbortedMessage
     | LogMessage
+    | VarDumpMessage
     | BootstrapWorkerMessage

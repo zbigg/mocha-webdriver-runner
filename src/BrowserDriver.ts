@@ -52,7 +52,7 @@ export function delayMochaRun(mocha: Mocha) {
     mocha.timeout(MAGIC_TIMEOUT);
 
     const originalMochaRun = mocha.run;
-    mocha.run = function(fn?: ((failures: number) => void | undefined)): Mocha.Runner {
+    mocha.run = function (fn?: ((failures: number) => void | undefined)): Mocha.Runner {
         runnerBackChannel.addEventListener("message", event => {
             const message = event.data as RemoteRunnerMessage;
             if (message && message.type === "mocha-run") {
@@ -105,6 +105,9 @@ export function initializeMochaWebDriverClient() {
         }
         if (typeof parsed.captureConsoleLog === "string") {
             mochaOptions.captureConsoleLog = parsed.captureConsoleLog !== "";
+        }
+        if (typeof parsed.globalsToSave === "string") {
+            mochaOptions.globalsToSave = String(parsed.globalsToSave).split(',');
         }
 
         queryStringRunnerOptions = mochaOptions;
