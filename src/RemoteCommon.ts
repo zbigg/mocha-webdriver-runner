@@ -1,11 +1,13 @@
 import { WebWorkerMessagePort } from "./WebWorkerMessagePort";
 import { BrowserMessagePort } from "./BrowserMessagePort";
-import { RemoteRunnerOptions, LogMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
+import { RemoteRunnerOptions, LogMessage } from "./RemoteRunnerProtocol";
 import { buildMessage } from "@zbigg/treesync";
 
 declare let self: Worker & {
     importScripts(..._scripts: string[]): void;
 };
+
+export let currentOptions: RemoteRunnerOptions = {};
 
 export const MAGIC_TIMEOUT = 312345678;
 
@@ -18,6 +20,8 @@ export const runnerBackChannel = inWebWorkerContext()
     : new BrowserMessagePort();
 
 export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
+    currentOptions = {...currentOptions, ...options};
+
     if (options.captureConsoleLog) {
         installConsoleLogForwarder();
     }

@@ -30,6 +30,7 @@ interface CliOptions {
     reporterOptions?: { [name: string]: string };
     grep?: string;
     timeout?: number;
+    globalsToSave?: { [name: string]: string };
     captureConsoleLog?: boolean;
 }
 
@@ -88,7 +89,7 @@ function collectCapabilities(val: string, capabilities: any) {
     const dividerIndex = val.indexOf("=");
     let value;
     let key;
-    if (dividerIndex === 0) {
+    if (dividerIndex === -1) {
         key = val;
         value = true;
     } else {
@@ -101,6 +102,26 @@ function collectCapabilities(val: string, capabilities: any) {
         }
     }
     set(programOptions.capabilities!, key, value);
+}
+
+function collectGlobalsToSave(val: string) {
+    if (!val) {
+        throw new Error("global name cannot be empty");
+    }
+    let globalName;
+    let outputFileName;
+    const dividerIndex = val.indexOf(":");
+    if (dividerIndex === -1) {
+        globalName = val;
+        outputFileName = `${val}.json`;
+    } else {
+        globalName = val.substr(0, dividerIndex);
+        outputFileName = val.substr(dividerIndex + 1);
+    }
+    if (!programOptions.globalsToSave) {
+        programOptions.globalsToSave = {};
+    }
+    programOptions.globalsToSave[globalName] = outputFileName;
 }
 
 function looksLikeUrl(val: string) {
@@ -131,6 +152,7 @@ commander
         numberOptionConsumer("timeout"),
         DEFAULT_CLI_OPTIONS.timeout
     )
+    .option("-S, --save <globalName[:fileName]>", "save global `name` as JSON file", collectGlobalsToSave)
     .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
     .option("-g, --grep <pattern>", "only run tests/suites that match pattern", stringOptionConsumer("grep"))
     .version(version);
@@ -212,12 +234,21 @@ const options: Options = {
     reporterOptions: programOptions.reporterOptions,
     grep: programOptions.grep,
     timeout: programOptions.timeout,
+    globalsToSave: programOptions.globalsToSave && Object.keys(programOptions.globalsToSave),
     captureConsoleLog: programOptions.captureConsoleLog
 };
 
 runMochaWebDriverTest(programOptions.capabilities, url, options)
     .then(result => {
-        if (result) {
+        for (const varName in result.dumpedGlobals) {
+            const varValue = result.dumpedGlobals[varName];
+            const fileName = programOptions.globalsToSave![varName];
+            console.log(`mocha-webdriver-runner: saving ${varName} dump in ${fileName}`);
+            fs.mkdirSync(path.dirname(fileName), { recursive: true });
+            fs.writeFileSync(fileName, JSON.stringify(varValue), "utf-8");
+        }
+
+        if (result.success) {
             process.exit(0);
         } else {
             process.exit(1);

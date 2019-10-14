@@ -84,7 +84,7 @@ browserConfigurations.forEach(entry => {
                     "file://" + __dirname + "/sample-suite/index-headless.html",
                     runTestOptions
                 );
-                assert.equal(testResult, false);
+                assert.equal(testResult.success, false);
                 xunitSuiteAsserts();
             });
             it("generates correct xunit output from worker auto test", async function() {
@@ -94,7 +94,7 @@ browserConfigurations.forEach(entry => {
                     "file://" + __dirname + "/sample-suite/worker-test-auto.html",
                     runTestOptions
                 );
-                assert.equal(testResult, false);
+                assert.equal(testResult.success, false);
                 xunitSuiteAsserts();
             });
         });
@@ -110,7 +110,7 @@ browserConfigurations.forEach(entry => {
                         reporter: NullReporter
                     }
                 );
-                assert.equal(testResult, false);
+                assert.equal(testResult.success, false);
             });
             it("supports timeout override", async function() {
                 this.timeout(20000);
@@ -122,7 +122,7 @@ browserConfigurations.forEach(entry => {
                         timeout: 3000
                     }
                 );
-                assert.equal(testResult, true);
+                assert.equal(testResult.success, true);
             });
         });
     });

@@ -38,8 +38,17 @@ export interface Options extends RemoteRunnerOptions {
     clientWaitsForOptions?: boolean;
 }
 
-export function runRemoteMochaTest(messagePort: MessagePort, options: Options): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
+export interface RemoteTestRunResult {
+    success: boolean,
+    dumpedGlobals: { [name: string]: any };
+}
+
+export function runRemoteMochaTest(messagePort: MessagePort, options: Options): Promise<RemoteTestRunResult> {
+    return new Promise<RemoteTestRunResult>((resolve, reject) => {
+        let result: RemoteTestRunResult = {
+            success: false,
+            dumpedGlobals: {}
+        }
         const captureConsoleLog = options.captureConsoleLog !== false;
         const reporterConstructor = getReporterConstructor(options!);
 
@@ -99,7 +108,8 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
                             mochaOptions: {
                                 grep: options.grep,
                                 captureConsoleLog: captureConsoleLog,
-                                timeout: options.timeout
+                                timeout: options.timeout,
+                                globalsToSave: options.globalsToSave
                             }
                         });
                     }
@@ -111,6 +121,12 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
                     const args = [`[browser] ${message.level}:`].concat(decodeMessage(message.args));
                     (console as any)[message.level].apply(console, args);
                     break;
+
+                case "var-dump":
+                    const value = decodeMessage(message.value);
+                    result.dumpedGlobals[message.name] = value;
+                    break;
+
                 case "err-unhandled-exception":
                     {
                         console.error(message.message);
@@ -163,10 +179,12 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
             const reporterDone = reporter && (reporter as any).done;
             if (typeof reporterDone === "function") {
                 reporterDone.call(reporter, failures, () => {
-                    resolve(failures === 0);
+                    result.success = failures === 0;
+                    resolve(result);
                 });
             } else {
-                resolve(failures === 0);
+                result.success = failures === 0;
+                resolve(result);
             }
         }
 

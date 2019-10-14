@@ -13,7 +13,7 @@
     <script src="../../node_modules/chai/chai.js"></script>
     <script src="../../dist/mocha-webdriver-client.js"></script>
     <script>
-        mocha.setup({ ui: "bdd" });
+        mocha.setup({ ui: "bdd", globals: ["someResult"] });
     </script>
     <script src="tests.js"></script>
     <script>

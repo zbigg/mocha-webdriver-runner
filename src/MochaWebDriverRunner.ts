@@ -1,6 +1,6 @@
 import { Builder, WebDriver, Capabilities } from "selenium-webdriver";
 import { WebDriverMessagePort } from "./WebDriverMessagePort";
-import { Options, runRemoteMochaTest } from "./MochaRemoteRunner";
+import { Options, runRemoteMochaTest, RemoteTestRunResult } from "./MochaRemoteRunner";
 
 import * as querystring from "querystring";
 
@@ -40,7 +40,7 @@ export async function runMochaWebDriverTest(
     webDriver: WebDriver | Capabilities,
     url: string,
     options?: Options
-): Promise<boolean> {
+): Promise<RemoteTestRunResult> {
     if (!(webDriver instanceof WebDriver)) {
         return withWebDriver(webDriver, (driver: WebDriver) => {
             return runMochaWebDriverTest(driver, url, options);
@@ -65,6 +65,9 @@ export async function runMochaWebDriverTest(
         }
         if (options.grep !== undefined) {
             queryStringParams.grep = options.grep;
+        }
+        if (options.globalsToSave !== undefined && options.globalsToSave.length > 0) {
+            queryStringParams.globalsToSave = options.globalsToSave.join(',');
         }
         const delimiter = url.indexOf('?') === -1 ? '?' : '&';
         url = url + delimiter + querystring.stringify(queryStringParams);
