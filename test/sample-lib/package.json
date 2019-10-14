@@ -1,0 +1,23 @@
+{
+  "name": "sample-lib",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "chromedriver": "^77.0.0",
+    "copy-webpack-plugin": "^5.0.4",
+    "istanbul-instrumenter-loader": "^3.0.1",
+    "mocha-webdriver-runner": "^0.5.3",
+    "mocha": "^6.2.1",
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9"
+  },
+  "scripts": {
+    "test-web": "webpack && mocha-webdriver-runner --headless-chrome -S __coverage__:.nyc_output/test.json ./dist/test/index.html",
+    "cov-report": "nyc report --reporter=html --reporter=text"
+  },
+  "nyc": {
+    "all": true,
+    "check-coverage": true
+  }
+}
