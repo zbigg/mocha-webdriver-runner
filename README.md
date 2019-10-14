@@ -215,6 +215,7 @@ Examples:
 -   [require.js based test runner](test/sample-suite/requirejs.html)
 -   [tests ran in worker](test/sample-suite/worker-test.html)
 -   [tests ran in worker in auto mode](test/sample-suite/worker-test-auto.html)
+-   [example library / coverage report](test/sample-lib/README.md)
 
 ## Contribute
 
