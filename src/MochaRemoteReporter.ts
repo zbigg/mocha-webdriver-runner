@@ -4,6 +4,8 @@ import { createMochaStateSynchronizer } from "./suite-synchronizer";
 import { MochaRunnerEvent, MochaRunnerEventMessage, RemoteRunnerMessage } from "./RemoteRunnerProtocol";
 import { buildMessage } from "@zbigg/treesync";
 
+const myGlobalThis = typeof globalThis !== "undefined" ? globalThis : (new Function("return this"))();
+
 /**
  * This reporter sends all events received from `Mocha.Runner` to
  * [[runRemoteMochaTest]] through [[runnerBackChannel]].
@@ -27,49 +29,49 @@ export class MochaRemoteReporter {
 
         // TODO: hook events
 
-        runner.on("start", function () {
+        runner.on("start", function() {
             forwardRunnerEvent({
                 type: "start",
                 suite: runner.suite
             });
         });
 
-        runner.on("suite", function (suite) {
+        runner.on("suite", function(suite) {
             forwardRunnerEvent({
                 type: "suite",
                 suite
             });
         });
 
-        runner.on("suite end", function (suite) {
+        runner.on("suite end", function(suite) {
             forwardRunnerEvent({
                 type: "suite end",
                 suite
             });
         });
 
-        runner.on("test", function (test) {
+        runner.on("test", function(test) {
             forwardRunnerEvent({
                 type: "test",
                 test
             });
         });
 
-        runner.on("test end", function (test) {
+        runner.on("test end", function(test) {
             forwardRunnerEvent({
                 type: "test end",
                 test
             });
         });
 
-        runner.on("pending", function (test) {
+        runner.on("pending", function(test) {
             forwardRunnerEvent({
                 type: "pending",
                 test
             });
         });
 
-        runner.on("pass", function (test) {
+        runner.on("pass", function(test) {
             passes++;
             forwardRunnerEvent({
                 type: "pass",
@@ -77,7 +79,7 @@ export class MochaRemoteReporter {
             });
         });
 
-        runner.on("fail", function (test, err) {
+        runner.on("fail", function(test, err) {
             failures++;
 
             forwardRunnerEvent({
@@ -87,11 +89,10 @@ export class MochaRemoteReporter {
             });
         });
 
-        runner.on("end", function () {
-
+        runner.on("end", function() {
             if (currentOptions.globalsToSave !== undefined) {
                 for (const globalName of currentOptions.globalsToSave) {
-                    const value = (globalThis as any)[globalName];
+                    const value = myGlobalThis[globalName];
                     runnerBackChannel.postMessage(<RemoteRunnerMessage>{
                         type: "var-dump",
                         name: globalName,

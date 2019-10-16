@@ -6,6 +6,10 @@
 
 var assert = typeof chai !== "undefined" ? chai.assert : require("chai").assert;
 
+if (typeof globalThis === "undefined") {
+    globalThis = (new Function("return this;"))();
+}
+
 describe("sample module", function () {
     it("passing test", function () {
         assert(true);
