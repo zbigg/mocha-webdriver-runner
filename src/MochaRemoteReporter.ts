@@ -91,7 +91,7 @@ export class MochaRemoteReporter {
 
             if (currentOptions.globalsToSave !== undefined) {
                 for (const globalName of currentOptions.globalsToSave) {
-                    const value = (window as any)[globalName];
+                    const value = (globalThis as any)[globalName];
                     runnerBackChannel.postMessage(<RemoteRunnerMessage>{
                         type: "var-dump",
                         name: globalName,

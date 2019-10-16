@@ -6,6 +6,8 @@ import * as xpath from "xpath";
 const xmldom = require("xmldom");
 
 import { runMochaWebDriverTest } from "../src/MochaWebDriverRunner";
+import { RemoteRunnerOptions } from "../src/RemoteRunnerProtocol";
+import { Options } from "../src/MochaRemoteRunner";
 
 class NullReporter extends Mocha.reporters.Base {
     constructor(runner: Mocha.Runner) {
@@ -40,12 +42,14 @@ browserConfigurations.forEach(entry => {
         describe("Mocha xunit reporter support", function() {
             const xunitTmpFile = "xunit-tmp.xml";
 
-            const runTestOptions = {
+            const runTestOptions: Options = {
                 reporter: "xunit",
                 reporterOptions: {
                     output: xunitTmpFile,
                     suiteName: "Test Suite Name"
-                }
+                },
+                globalsToSave: ["someResult"],
+                globals: ["someResult"]
             };
             beforeEach(function() {
                 if (fs.existsSync(xunitTmpFile)) {
@@ -85,6 +89,7 @@ browserConfigurations.forEach(entry => {
                     runTestOptions
                 );
                 assert.equal(testResult.success, false);
+                assert.isDefined(testResult.dumpedGlobals.someResult);
                 xunitSuiteAsserts();
             });
             it("generates correct xunit output from worker auto test", async function() {
@@ -95,6 +100,7 @@ browserConfigurations.forEach(entry => {
                     runTestOptions
                 );
                 assert.equal(testResult.success, false);
+                assert.isDefined(testResult.dumpedGlobals.someResult);
                 xunitSuiteAsserts();
             });
         });

@@ -13,6 +13,16 @@ export interface RemoteRunnerOptions {
     timeout?: number;
 
     /**
+     * Check for global variable leaks.
+     */
+    checkLeaks?: boolean;
+
+    /**
+     * List of allowed global variables.
+     */
+    globals?: string[];
+
+    /**
      * Run only tests than name matches `grep` expression.
      */
     grep?: string | RegExp;

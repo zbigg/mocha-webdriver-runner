@@ -63,6 +63,12 @@ export async function runMochaWebDriverTest(
         if (options.timeout !== undefined) {
             queryStringParams.timeout = options.timeout;
         }
+        if (options.globals !== undefined) {
+            queryStringParams.globals = options.globals.join(',');
+        }
+        if (options.checkLeaks !== undefined) {
+            queryStringParams.checkLeaks = options.checkLeaks;
+        }
         if (options.grep !== undefined) {
             queryStringParams.grep = options.grep;
         }

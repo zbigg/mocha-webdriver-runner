@@ -29,6 +29,8 @@ interface CliOptions {
     reporter?: string;
     reporterOptions?: { [name: string]: string };
     grep?: string;
+    checkLeaks?: boolean;
+    globals?: string[];
     timeout?: number;
     globalsToSave?: { [name: string]: string };
     captureConsoleLog?: boolean;
@@ -124,6 +126,15 @@ function collectGlobalsToSave(val: string) {
     programOptions.globalsToSave[globalName] = outputFileName;
 }
 
+const globals: string[] = [];
+
+function collectGlobals(val: string) {
+    if (!val) {
+        throw new Error("global name cannot be empty");
+    }
+    globals.push(...val.split(','));
+}
+
 function looksLikeUrl(val: string) {
     return val.startsWith("http:") || val.startsWith("https:") || val.startsWith("file:");
 }
@@ -152,6 +163,8 @@ commander
         numberOptionConsumer("timeout"),
         DEFAULT_CLI_OPTIONS.timeout
     )
+    .option("--check-leaks <boolean>", "Check for global variable leaks")
+    .option("--globals <name1,name2...>", "list of allowed global variables", collectGlobals, [])
     .option("-S, --save <globalName[:fileName]>", "save global `name` as JSON file", collectGlobalsToSave)
     .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
     .option("-g, --grep <pattern>", "only run tests/suites that match pattern", stringOptionConsumer("grep"))
@@ -233,6 +246,8 @@ const options: Options = {
     reporter: programOptions.reporter,
     reporterOptions: programOptions.reporterOptions,
     grep: programOptions.grep,
+    checkLeaks: programOptions.checkLeaks,
+    globals: programOptions.globals,
     timeout: programOptions.timeout,
     globalsToSave: programOptions.globalsToSave && Object.keys(programOptions.globalsToSave),
     captureConsoleLog: programOptions.captureConsoleLog
