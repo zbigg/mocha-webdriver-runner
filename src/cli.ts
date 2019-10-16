@@ -4,16 +4,68 @@ import * as commander from "commander";
 import * as fs from "fs";
 import * as path from "path";
 
-import { set } from "lodash";
+import { set, merge, cloneDeep } from "lodash";
 import { runMochaWebDriverTest } from "./MochaWebDriverRunner";
 import { Options } from "./MochaRemoteRunner";
 
-/**
- * Parse `mocha --reporter-options OPTIONS string.
- */
-function parseReporterOptions(optionsString?: string) {
+const DEFAULT_CONFIG_FILE = ".mocha-webdriver-runner.json";
+
+function readDefaultCliOptions(): CliOptions {
+    let optionsRaw: any;
+    if (!fs.existsSync(DEFAULT_CONFIG_FILE)) {
+        return {};
+    }
+    try {
+        optionsRaw = fs.readFileSync(DEFAULT_CONFIG_FILE, "utf-8");
+    } catch (error) {
+        throw new Error(`unable to read config from '${DEFAULT_CONFIG_FILE}': ${error}`);
+    }
+    return JSON.parse(optionsRaw);
+}
+
+interface CliOptions {
+    capabilities?: any;
+
+    reporter?: string;
+    reporterOptions?: { [name: string]: string };
+    grep?: string;
+    timeout?: number;
+    captureConsoleLog?: boolean;
+}
+
+let DEFAULT_CLI_OPTIONS: Readonly<CliOptions> = {
+    capabilities: {},
+    timeout: 2000,
+    reporter: "spec"
+};
+
+let programOptions: CliOptions = cloneDeep(DEFAULT_CLI_OPTIONS);
+
+let useDefaultConfigFile = true;
+
+function consumeOptionsFileOption(name: string) {
+    useDefaultConfigFile = false;
+    const fromFile = JSON.parse(fs.readFileSync(name, "utf-8"));
+    merge(programOptions, fromFile);
+}
+
+function numberOptionConsumer(name: string) {
+    return (value: string, current: any) => {
+        const intValue = parseInt(value, 10);
+        set(programOptions, name, intValue);
+    };
+}
+
+function stringOptionConsumer(name: string) {
+    return (value: string, current: any) => {
+        set(programOptions, name, value);
+        return value;
+    };
+}
+
+function consumeReporterOptions(optionsString?: string) {
     if (!optionsString) {
-        return undefined;
+        return;
     }
     const result: any = {};
     optionsString.split(",").forEach(opt => {
@@ -26,10 +78,9 @@ function parseReporterOptions(optionsString?: string) {
             result[parsed[0]] = true;
         }
     });
-    return result;
+    programOptions.reporterOptions = result;
 }
 
-const globalCapabilities: any = {};
 function collectCapabilities(val: string, capabilities: any) {
     if (!val) {
         throw new Error("capability cannot be empty");
@@ -49,8 +100,7 @@ function collectCapabilities(val: string, capabilities: any) {
             value = JSON.parse(value);
         }
     }
-    set(globalCapabilities, key, value);
-    return globalCapabilities;
+    set(programOptions.capabilities!, key, value);
 }
 
 function looksLikeUrl(val: string) {
@@ -62,21 +112,31 @@ function createLocalFileUrl(testPagePath: string) {
     return `file://${absoluteTestPagePath}`;
 }
 
-
 const version = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8")).version;
 
 commander
-    .version(version)
     .usage("[options] URL")
+    .option("-c, --config <FILE>", "config file", consumeOptionsFileOption, DEFAULT_CONFIG_FILE)
     .option("-C, --capability <name[=value]>", "required browser capability", collectCapabilities)
-    .option("-O, --reporter-options <k=v,k2=v2,...>", "reporter-specific options")
-    .option("-R, --reporter <name>", "specify the reporter to use", "spec")
-    .option("-t, --timeout <ms>", "set test-case timeout in milliseconds", 2000)
+    .option("-O, --reporter-options <k=v,k2=v2,...>", "reporter-specific options", consumeReporterOptions())
+    .option(
+        "-R, --reporter <name>",
+        "specify the reporter to use",
+        stringOptionConsumer("reporter"),
+        DEFAULT_CLI_OPTIONS.reporter
+    )
+    .option(
+        "-t, --timeout <ms>",
+        "set test-case timeout in milliseconds",
+        numberOptionConsumer("timeout"),
+        DEFAULT_CLI_OPTIONS.timeout
+    )
     .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
-    .option("-g, --grep <pattern>", "only run tests/suites that match pattern");
+    .option("-g, --grep <pattern>", "only run tests/suites that match pattern", stringOptionConsumer("grep"))
+    .version(version);
 
 const shortcuts: any = {
-    "chrome": {
+    chrome: {
         doc: "use Chrome",
         capabilities: {
             browserName: "chrome"
@@ -91,7 +151,7 @@ const shortcuts: any = {
             }
         }
     },
-    "firefox": {
+    firefox: {
         doc: "use Firefox",
         capabilities: {
             browserName: "firefox"
@@ -106,13 +166,13 @@ const shortcuts: any = {
             }
         }
     },
-    "safari": {
+    safari: {
         doc: "use Safari",
         capabilities: {
             browserName: "safari"
         }
     },
-    "edge": {
+    edge: {
         doc: "use Edge",
         capabilities: {
             browserName: "MicrosoftEdge"
@@ -120,14 +180,18 @@ const shortcuts: any = {
     }
 };
 
-for(const name in shortcuts) {
+for (const name in shortcuts) {
     const entry = shortcuts[name];
     commander.option(`--${name}`, entry.doc, function() {
-        Object.assign(globalCapabilities, entry.capabilities)
-    })
+        merge(programOptions.capabilities, entry.capabilities);
+    });
 }
 
 commander.parse(process.argv);
+
+if (useDefaultConfigFile) {
+    programOptions = merge({}, DEFAULT_CLI_OPTIONS, readDefaultCliOptions, programOptions);
+}
 
 const args = commander.args;
 if (args.length < 1) {
@@ -142,24 +206,25 @@ const url = looksLikeUrl(mainScript) ? mainScript : createLocalFileUrl(mainScrip
 if (process.env.SELENIUM_REMOTE_URL && url.startsWith("file:")) {
     console.warn(`mocha-webdriver-runner: warning: remote selenium nodes usually don't work with file:// urls`);
 }
-const cliOptions = commander.opts();
+
 const options: Options = {
-    reporter: cliOptions.reporter,
-    reporterOptions: parseReporterOptions(cliOptions.reporterOptions),
-    grep: cliOptions.grep,
-    timeout: cliOptions.timeout,
-    captureConsoleLog: cliOptions.captureConsoleLog
+    reporter: programOptions.reporter,
+    reporterOptions: programOptions.reporterOptions,
+    grep: programOptions.grep,
+    timeout: programOptions.timeout,
+    captureConsoleLog: programOptions.captureConsoleLog
 };
 
-runMochaWebDriverTest(globalCapabilities, url, options)
+runMochaWebDriverTest(programOptions.capabilities, url, options)
     .then(result => {
         if (result) {
             process.exit(0);
         } else {
             process.exit(1);
         }
-    }).catch(error => {
+    })
+    .catch(error => {
         console.error(`mocha-webdriver-runner: unexpected error: ${error}`);
         console.error(error);
         process.exit(1);
-    })
+    });

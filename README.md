@@ -86,6 +86,50 @@ SELENIUM_REMOTE_URL=http://my-selenium-grid:4444/wd/hub
 
 See [WebDriverJS Builder](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_Builder.html)
 
+## Options
+
+```
+  -c, --config <FILE>                     config file (default: ".mocha-webdriver-runner.json")
+  -C, --capability <name[=value]>         required browser capability
+  -O, --reporter-options <k=v,k2=v2,...>  reporter-specific options
+  -R, --reporter <name>                   specify the reporter to use (default: "spec")
+  -t, --timeout <ms>                      set test-case timeout in milliseconds (default: 2000)
+  -L, --capture-console-log <boolean>     whether to capture console.log in browser context (default: true)
+  -g, --grep <pattern>                    only run tests/suites that match pattern
+  -V, --version                           output the version number
+  --chrome                                use Chrome
+  --headless-chrome                       use headless Chrome
+  --firefox                               use Firefox
+  --headless-firefox                      use headless Firefox
+  --safari                                use Safari
+  --edge                                  use Edge
+```
+
+## Config file
+
+`mocha-webdriver-runner` can load options from config file. Use `-c FILE` option to specify custom file.
+If `-c` is not specified, `mocha-webdriver-runner` will attempt to load it from `.mocha-webdriver-runner.json`.
+
+Config file, is JSON with, following properties:
+
+ * `capabilities` - object representing `WebDriver` capabilities
+ * all other CLI options are available as properties
+
+Example config for tests on Headless Chrome with no GPU and selecting only tests with `#performance` tag:
+```
+{
+    "timeout": 0,
+    "grep": "#performance
+    "capabilities": {
+        "browserName": "chrome",
+        "goog:chromeOptions": {
+            "args": ["--headless", "--disable-gpu=true"]
+        }
+    }
+}
+```
+
+
 ## Browser Drivers
 
 Testing against browser that runs on your desktop requires that proper drivers are installed in your environment.
