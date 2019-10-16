@@ -1,10 +1,5 @@
 import { MochaRemoteReporter } from "./MochaRemoteReporter";
-import {
-    applyMochaOptions,
-    installGlobalErrorHandlers,
-    runnerBackChannel,
-    MAGIC_TIMEOUT
-} from "./RemoteCommon";
+import { applyMochaOptions, installGlobalErrorHandlers, runnerBackChannel, MAGIC_TIMEOUT } from "./RemoteCommon";
 import {
     MochaReadyMessage,
     MochaFinishedMessage,
@@ -52,7 +47,7 @@ export function delayMochaRun(mocha: Mocha) {
     mocha.timeout(MAGIC_TIMEOUT);
 
     const originalMochaRun = mocha.run;
-    mocha.run = function (fn?: ((failures: number) => void | undefined)): Mocha.Runner {
+    mocha.run = function(fn?: (failures: number) => void | undefined): Mocha.Runner {
         runnerBackChannel.addEventListener("message", event => {
             const message = event.data as RemoteRunnerMessage;
             if (message && message.type === "mocha-run") {
@@ -100,6 +95,14 @@ export function initializeMochaWebDriverClient() {
         if (typeof parsed.grep === "string") {
             mochaOptions.grep = parsed.grep;
         }
+        if (typeof parsed.checkLeaks === "string") {
+            mochaOptions.checkLeaks = parsed.checkLeaks !== "false";
+        }
+        if (typeof parsed.globals === "string") {
+            mochaOptions.globals = String(parsed.globals)
+                .split(",")
+                .filter(s => s.length > 0);
+        }
         if (typeof parsed.captureConsoleLog === "string") {
             mochaOptions.captureConsoleLog = parsed.captureConsoleLog !== "false";
         }
@@ -107,7 +110,9 @@ export function initializeMochaWebDriverClient() {
             mochaOptions.captureConsoleLog = parsed.captureConsoleLog !== "";
         }
         if (typeof parsed.globalsToSave === "string") {
-            mochaOptions.globalsToSave = String(parsed.globalsToSave).split(',');
+            mochaOptions.globalsToSave = String(parsed.globalsToSave)
+                .split(",")
+                .filter(s => s.length > 0);
         }
 
         queryStringRunnerOptions = mochaOptions;

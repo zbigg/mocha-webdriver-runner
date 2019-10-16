@@ -26,6 +26,18 @@ export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
         installConsoleLogForwarder();
     }
 
+    if (options.checkLeaks !== undefined) {
+        if (options.checkLeaks) {
+            mocha.checkLeaks()
+
+        } else {
+            mocha.ignoreLeaks(true)
+        }
+    }
+    if (options.globals !== undefined) {
+        mocha.globals(options.globals);
+    }
+
     if (options.grep) {
         mocha.grep(options.grep);
     }

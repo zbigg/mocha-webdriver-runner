@@ -9,16 +9,15 @@ var assert = typeof chai !== "undefined" ? chai.assert : require("chai").assert;
 describe("sample module", function () {
     it("passing test", function () {
         assert(true);
-        window.someResult = Object.assign(window.someResult || {}, {
+        globalThis.someResult = Object.assign(globalThis.someResult || {}, {
             test1: "result1"
         })
-        console.log("ZZ", window.someResult);
     });
     it.skip("pending test", function () {
         assert(true);
     });
     it("failing test with basic string diff", function () {
-        window.someResult = Object.assign(window.someResult || {}, {
+        globalThis.someResult = Object.assign(globalThis.someResult || {}, {
             test2: "result2"
         })
         assert.equal("abcdef", "abcd");
