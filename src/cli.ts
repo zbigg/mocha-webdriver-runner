@@ -37,6 +37,7 @@ interface CliOptions {
 }
 
 let DEFAULT_CLI_OPTIONS: Readonly<CliOptions> = {
+    captureConsoleLog: true,
     capabilities: {},
     timeout: 2000,
     reporter: "spec"
@@ -62,6 +63,15 @@ function numberOptionConsumer(name: string) {
 function stringOptionConsumer(name: string) {
     return (value: string, current: any) => {
         set(programOptions, name, value);
+        return value;
+    };
+}
+
+function booleanOptionConsumer(name: string) {
+    return (value: string, current: any) => {
+        const normalized = value.toLocaleLowerCase();
+        const enabled = normalized === "yes" || normalized === "1" || normalized === "true";
+        set(programOptions, name, enabled);
         return value;
     };
 }
@@ -132,7 +142,7 @@ function collectGlobals(val: string) {
     if (!val) {
         throw new Error("global name cannot be empty");
     }
-    globals.push(...val.split(','));
+    globals.push(...val.split(","));
 }
 
 function looksLikeUrl(val: string) {
@@ -166,7 +176,11 @@ commander
     .option("--check-leaks <boolean>", "Check for global variable leaks")
     .option("--globals <name1,name2...>", "list of allowed global variables", collectGlobals, [])
     .option("-S, --save <globalName[:fileName]>", "save global `name` as JSON file", collectGlobalsToSave)
-    .option("-L, --capture-console-log <boolean>", "whether to capture console.log in browser context", true)
+    .option(
+        "-L, --capture-console-log <boolean>",
+        "whether to capture console.log in browser context",
+        booleanOptionConsumer("captureConsoleLog")
+    )
     .option("-g, --grep <pattern>", "only run tests/suites that match pattern", stringOptionConsumer("grep"))
     .version(version);
 

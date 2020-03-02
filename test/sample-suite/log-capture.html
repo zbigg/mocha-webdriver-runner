@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Webdriver Tests</title>
+    <link href="../../node_modules/mocha/mocha.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="mocha"></div>
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script src="../../node_modules/chai/chai.js"></script>
+    <script src="../../dist/mocha-webdriver-client.js"></script>
+    <script>
+        mocha.setup({
+            ui: "bdd"
+        });
+    </script>
+    <script>
+        describe("logging", function () {
+            it("sample logs", function () {
+                console.log("sample console.log");
+                console.error("sample console.error");
+                console.info("sample console.info");
+                console.debug("sample console.debug");
+            });
+        })
+    </script>
+    <script>
+        mocha.checkLeaks();
+        mocha.run();
+    </script>
+</body>
+
+</html>

@@ -16,6 +16,8 @@ describe("sample module", function () {
         globalThis.someResult = Object.assign(globalThis.someResult || {}, {
             test1: "result1"
         })
+        console.log("sample console.log");
+        console.error("sample console.error");
     });
     it.skip("pending test", function () {
         assert(true);

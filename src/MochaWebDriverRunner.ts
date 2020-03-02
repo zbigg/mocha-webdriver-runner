@@ -31,10 +31,6 @@ export async function withWebDriver<T>(capabilities: Object | Capabilities, test
 
 /**
  * Run Mocha tests using `webDriver` (instance or `Capabilities` used to build instance).
- *
- * @param webDriver
- * @param url
- * @param options
  */
 export async function runMochaWebDriverTest(
     webDriver: WebDriver | Capabilities,
@@ -48,6 +44,9 @@ export async function runMochaWebDriverTest(
     }
 
     options = options || {};
+    if (options.captureConsoleLog === undefined) {
+        options.captureConsoleLog = true;
+    }
     const passOptionsWithQueryString = true;
 
     if (passOptionsWithQueryString) {
@@ -55,7 +54,7 @@ export async function runMochaWebDriverTest(
             useMochaWebDriverRunner: 1
         };
         if (options.captureConsoleLog !== undefined) {
-            queryStringParams.captureConsoleLog = options.captureConsoleLog;
+            queryStringParams.captureConsoleLog = options.captureConsoleLog !== false;
         }
         if (options.delay !== undefined) {
             queryStringParams.delay = options.delay;
@@ -64,7 +63,7 @@ export async function runMochaWebDriverTest(
             queryStringParams.timeout = options.timeout;
         }
         if (options.globals !== undefined) {
-            queryStringParams.globals = options.globals.join(',');
+            queryStringParams.globals = options.globals.join(",");
         }
         if (options.checkLeaks !== undefined) {
             queryStringParams.checkLeaks = options.checkLeaks;
@@ -73,9 +72,9 @@ export async function runMochaWebDriverTest(
             queryStringParams.grep = options.grep;
         }
         if (options.globalsToSave !== undefined && options.globalsToSave.length > 0) {
-            queryStringParams.globalsToSave = options.globalsToSave.join(',');
+            queryStringParams.globalsToSave = options.globalsToSave.join(",");
         }
-        const delimiter = url.indexOf('?') === -1 ? '?' : '&';
+        const delimiter = url.indexOf("?") === -1 ? "?" : "&";
         url = url + delimiter + querystring.stringify(queryStringParams);
     }
 

@@ -1,4 +1,6 @@
 import { assert } from "chai";
+import * as sinon from "sinon";
+
 import * as Mocha from "mocha";
 import * as fs from "fs";
 import * as xpath from "xpath";
@@ -6,7 +8,6 @@ import * as xpath from "xpath";
 const xmldom = require("xmldom");
 
 import { runMochaWebDriverTest } from "../src/MochaWebDriverRunner";
-import { RemoteRunnerOptions } from "../src/RemoteRunnerProtocol";
 import { Options } from "../src/MochaRemoteRunner";
 
 class NullReporter extends Mocha.reporters.Base {
@@ -129,6 +130,55 @@ browserConfigurations.forEach(entry => {
                     }
                 );
                 assert.equal(testResult.success, true);
+            });
+        });
+
+        describe("capture console logs supports", function() {
+            let sandbox: sinon.SinonSandbox;
+            const logLevels: (keyof Console)[] = ["log", "error"];
+            beforeEach(function() {
+                sandbox = sinon.createSandbox();
+            });
+            afterEach(function() {
+                sandbox.restore();
+            });
+
+            it("captures logs by default", async function() {
+                const spies = logLevels.map(name => sandbox.spy(console, name));
+                this.timeout(20000);
+                const testResult = await runMochaWebDriverTest(
+                    capabilities,
+                    "file://" + __dirname + "/sample-suite/log-capture.html",
+                    {
+                        reporter: NullReporter
+                    }
+                );
+                assert.equal(testResult.success, true);
+                logLevels.forEach((name, i) => {
+                    assert.isTrue(
+                        spies[i].calledWith(`[browser] ${name}:`, `sample console.${name}`),
+                        `expected 'sample console.${name}' message to be captured`
+                    );
+                });
+            });
+            it("doesn't capture logs by if disabled", async function() {
+                this.timeout(20000);
+                const spies = logLevels.map(name => sandbox.spy(console, name));
+                const testResult = await runMochaWebDriverTest(
+                    capabilities,
+                    "file://" + __dirname + "/sample-suite/log-capture.html",
+                    {
+                        reporter: NullReporter,
+                        captureConsoleLog: false
+                    }
+                );
+                assert.equal(testResult.success, true);
+                logLevels.forEach((name, i) => {
+                    assert.isFalse(
+                        spies[i].calledWith(`[browser] ${name}:`, `sample console.${name}`),
+                        `expected 'sample console.${name}' message to be captured`
+                    );
+                });
             });
         });
     });
