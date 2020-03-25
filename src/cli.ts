@@ -51,12 +51,14 @@ function consumeOptionsFileOption(name: string) {
     useDefaultConfigFile = false;
     const fromFile = JSON.parse(fs.readFileSync(name, "utf-8"));
     merge(programOptions, fromFile);
+    return name;
 }
 
 function numberOptionConsumer(name: string) {
     return (value: string, current: any) => {
         const intValue = parseInt(value, 10);
         set(programOptions, name, intValue);
+        return name;
     };
 }
 
@@ -78,7 +80,7 @@ function booleanOptionConsumer(name: string) {
 
 function consumeReporterOptions(optionsString?: string) {
     if (!optionsString) {
-        return;
+        return optionsString;
     }
     const result: any = {};
     optionsString.split(",").forEach(opt => {
@@ -92,6 +94,7 @@ function consumeReporterOptions(optionsString?: string) {
         }
     });
     programOptions.reporterOptions = result;
+    return optionsString;
 }
 
 function collectCapabilities(val: string, capabilities: any) {
@@ -143,6 +146,7 @@ function collectGlobals(val: string) {
         throw new Error("global name cannot be empty");
     }
     globals.push(...val.split(","));
+    return val;
 }
 
 function looksLikeUrl(val: string) {
@@ -174,7 +178,7 @@ commander
         DEFAULT_CLI_OPTIONS.timeout
     )
     .option("--check-leaks <boolean>", "Check for global variable leaks")
-    .option("--globals <name1,name2...>", "list of allowed global variables", collectGlobals, [])
+    .option("--globals <name1,name2...>", "list of allowed global variables", collectGlobals)
     .option("-S, --save <globalName[:fileName]>", "save global `name` as JSON file", collectGlobalsToSave)
     .option(
         "-L, --capture-console-log <boolean>",
