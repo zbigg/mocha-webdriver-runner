@@ -55,7 +55,7 @@
     "@types/sinon": "^7.5.2",
     "chai": "^4.2.0",
     "chromedriver": "^80.0.0",
-    "geckodriver": "^1.16.2",
+    "geckodriver": "^1.19.1",
     "http-server": "^0.12.1",
     "qs": "^6.7.0",
     "rollup": "^1.32.1",
