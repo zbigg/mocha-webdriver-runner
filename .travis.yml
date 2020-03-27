@@ -2,6 +2,8 @@ os:
   - linux
   - osx
 
+dist: bionic
+
 addons:
   chrome: stable
   firefox: latest
