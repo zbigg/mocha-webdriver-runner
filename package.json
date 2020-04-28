@@ -55,7 +55,7 @@
     "chai": "^4.2.0",
     "chromedriver": "^81.0.0",
     "geckodriver": "^1.19.1",
-    "http-server": "^0.12.1",
+    "http-server": "^0.12.3",
     "mocha": "^7.1.1",
     "qs": "^6.9.2",
     "rollup": "^1.32.1",
