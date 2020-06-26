@@ -9,12 +9,13 @@ addons:
   firefox: latest
 
 env:
-  - DETECT_CHROMEDRIVER_VERSION=true
+  global:
+    - DETECT_CHROMEDRIVER_VERSION=true
 
 language: node_js
 
 node_js:
-  - "10"
   - "12"
+  - "14"
 
 
