@@ -43,7 +43,7 @@
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-commonjs": "^13.0.0",
     "@types/chai": "^4.2.11",
     "@types/events": "^3.0.0",
     "@types/lodash": "^4.14.13",
@@ -58,10 +58,10 @@
     "http-server": "^0.12.3",
     "mocha": "^8.0.1",
     "qs": "^6.9.2",
-    "rollup": "^1.32.1",
+    "rollup": "^2.18.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-typescript2": "^0.26.0",
+    "rollup-plugin-typescript2": "^0.27.1",
     "sinon": "^9.0.2",
     "ts-node": "^8.10.2",
     "tslib": "^2.0.0",
