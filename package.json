@@ -39,7 +39,7 @@
     "@zbigg/treesync": "^0.3.0",
     "commander": "^5.0.0",
     "events": "^3.1.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "devDependencies": {
@@ -47,7 +47,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/chai": "^4.2.12",
     "@types/events": "^3.0.0",
-    "@types/lodash": "^4.14.157",
+    "@types/lodash": "^4.14.161",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.0.14",
     "@types/qs": "^6.9.3",
