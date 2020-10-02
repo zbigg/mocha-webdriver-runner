@@ -27,12 +27,8 @@ export function applyMochaOptions(mocha: Mocha, options: RemoteRunnerOptions) {
     }
 
     if (options.checkLeaks !== undefined) {
-        if (options.checkLeaks) {
-            mocha.checkLeaks()
-
-        } else {
-            mocha.ignoreLeaks(true)
-        }
+        // TODO: mocha typings lack 'boolean' arg for checkLeaks
+        (mocha.checkLeaks as any)(options.checkLeaks)
     }
     if (options.globals !== undefined) {
         mocha.globals(options.globals);
