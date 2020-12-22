@@ -54,7 +54,7 @@
     "@types/selenium-webdriver": "^4.0.9",
     "@types/sinon": "^9.0.7",
     "chai": "^4.2.0",
-    "chromedriver": "^85.0.1",
+    "chromedriver": "^87.0.4",
     "geckodriver": "^1.20.0",
     "http-server": "^0.12.3",
     "mocha": "^8.1.3",

@@ -1,0 +1,57 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  nodeVersion: 14
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  test:
+    name: CI on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ["lts", 15]
+        os: [ubuntu-latest, macOS-latest]
+      fail-fast: true
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.nodeVersion }}
+
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+
+    - name: Build
+      run: yarn prepare
+
+    - name: Test
+      run: yarn test
+
+
+    - name: Create temporary package version
+      run: yarn version --no-git-tag-version --prepatch --preid `git log --pretty=format:'%h' -n 1`
+
+    - name: Build package
+      run: yarn pack
+
+    - name: Save package artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: npm-package
+        path: mocha-webdriver-runner*.tgz
+
+
