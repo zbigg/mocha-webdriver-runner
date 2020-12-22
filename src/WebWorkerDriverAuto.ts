@@ -135,7 +135,7 @@ export function runWorkerTestsAuto(options: WorkerTestAutoOptions | string[]) {
     installGlobalErrorHandlers();
     installConsoleLogForwarder();
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         const workerScript = `
             ${workerCode}
             workerCode();
