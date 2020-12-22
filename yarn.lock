@@ -2394,10 +2394,10 @@ xmldom@^0.4.0:
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.4.0.tgz#8771e482a333af44587e30ce026f0998c23f3830"
   integrity sha512-2E93k08T30Ugs+34HBSTQLVtpi6mCddaY8uO+pMNk1pqSjV5vElzn4mmh6KLxN3hki8rNcHSYzILoh3TEWORvA==
 
-xpath@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/xpath/-/xpath-0.0.29.tgz#eabccf418b2b9af4d67d8f1e5cc4f3b9562bce93"
-  integrity sha512-W6vSxu0tmHCW01EwDXx45/BAAl8lBJjcRB6eSswMuycOVbUkYskG3W1LtCxcesVel/RaNe/pxtd3FWLiqHGweA==
+xpath@^0.0.32:
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/xpath/-/xpath-0.0.32.tgz#1b73d3351af736e17ec078d6da4b8175405c48af"
+  integrity sha512-rxMJhSIoiO8vXcWvSifKqhvV96GjiD5wYb8/QHdoRyQvraTpp4IEv944nhGausZZ3u7dhQXteZuZbaqfpB7uYw==
 
 xtend@^2.2.0:
   version "2.2.0"
