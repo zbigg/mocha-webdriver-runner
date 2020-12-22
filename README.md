@@ -1,7 +1,7 @@
 # mocha-webdriver-runner
 
 [![npm](https://img.shields.io/npm/v/mocha-webdriver-runner.svg?style=flat-square)](http://www.npmjs.com/package/mocha-webdriver-runner)
-[![Build status](https://travis-ci.org/zbigg/mocha-webdriver-runner.svg?branch=master)](https://travis-ci.org/zbigg/mocha-webdriver-runner)
+[![Build status](https://github.com/zbigg/mocha-webdriver-runner/workflows/CI/badge.svg)](https://github.com/zbigg/mocha-webdriver-runner/actions)
 
 Run Mocha tests in browsers using Selenium WebDriver.
 
