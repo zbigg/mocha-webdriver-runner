@@ -1,8 +1,7 @@
 // rollup.config.js
 import typescript from "rollup-plugin-typescript2";
-import resolve from "@rollup/plugin-node-resolve";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import nodeBulitins from "rollup-plugin-node-builtins";
 export default [
     {
         input: "./src/index.web.ts",
@@ -12,17 +11,21 @@ export default [
             format: "umd",
             name: "MochaWebdriverClient",
             globals: {
-                mocha: "Mocha"
-            }
+                mocha: "Mocha",
+            },
         },
-        plugins: [typescript({
-            tsconfigOverride: {
-                compilerOptions: {
-                    "module": "esnext",
-                    "declaration": false
+        plugins: [
+            typescript({
+                tsconfigOverride: {
+                    compilerOptions: {
+                        module: "esnext",
+                        declaration: false,
+                    },
+                    include: ["./src/index.web.ts"],
                 },
-                "include": [ "./src/index.web.ts"]
-            }
-        }), resolve(), commonjs(), nodeBulitins()]
-    }
+            }),
+            commonjs(),
+            nodeResolve({ preferBuiltins: false }),
+        ],
+    },
 ];
