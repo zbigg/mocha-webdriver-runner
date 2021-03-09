@@ -18,11 +18,11 @@ env:
 jobs:
   # This workflow contains a single job called "build"
   test:
-    name: CI on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: CI on node ${{ matrix.nodeVersion }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ["lts", 15]
+        nodeVersion: ["lts", 15]
         os: [ubuntu-latest, macOS-latest]
       fail-fast: true
 
