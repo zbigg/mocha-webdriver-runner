@@ -48,7 +48,7 @@
     "@types/events": "^3.0.0",
     "@types/lodash": "^4.14.161",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^14.11.2",
+    "@types/node": "^16.3.2",
     "@types/qs": "^6.9.5",
     "@types/selenium-webdriver": "^4.0.9",
     "@types/sinon": "^9.0.7",
