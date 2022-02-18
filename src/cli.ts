@@ -7,6 +7,7 @@ import * as path from "path";
 import { set, merge, cloneDeep } from "lodash";
 import { runMochaWebDriverTest } from "./MochaWebDriverRunner";
 import { Options } from "./MochaRemoteRunner";
+import { Command } from "selenium-webdriver/lib/command";
 
 const DEFAULT_CONFIG_FILE = ".mocha-webdriver-runner.json";
 
@@ -83,7 +84,7 @@ function consumeReporterOptions(optionsString?: string) {
         return optionsString;
     }
     const result: any = {};
-    optionsString.split(",").forEach(opt => {
+    optionsString.split(",").forEach((opt) => {
         const parsed = opt.split("=");
         if (parsed.length > 2 || parsed.length === 0) {
             throw new Error(`invalid reporter option '${opt}'`);
@@ -160,7 +161,8 @@ function createLocalFileUrl(testPagePath: string) {
 
 const version = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8")).version;
 
-commander
+const program = new commander.Command();
+program
     .usage("[options] URL")
     .option("-c, --config <FILE>", "config file", consumeOptionsFileOption, DEFAULT_CONFIG_FILE)
     .option("-C, --capability <name[=value]>", "required browser capability", collectCapabilities)
@@ -235,24 +237,27 @@ const shortcuts: any = {
 
 for (const name in shortcuts) {
     const entry = shortcuts[name];
-    commander.option(`--${name}`, entry.doc, function() {
+    program.option(`--${name}`, entry.doc, function () {
+        console.log("XX", name);
         merge(programOptions.capabilities, entry.capabilities);
     });
 }
 
-commander.parse(process.argv);
+program.parse(process.argv);
+
+console.log("");
 
 if (useDefaultConfigFile) {
     programOptions = merge({}, DEFAULT_CLI_OPTIONS, readDefaultCliOptions, programOptions);
 }
 
-const args = commander.args;
+const args = program.args;
 if (args.length < 1) {
-    commander.outputHelp();
+    program.outputHelp();
     throw new Error("mocha-webdriver-runer: URL needed");
 }
 
-const mainScript = commander.args.shift()!;
+const mainScript = program.args.shift()!;
 
 const url = looksLikeUrl(mainScript) ? mainScript : createLocalFileUrl(mainScript);
 
@@ -272,7 +277,7 @@ const options: Options = {
 };
 
 runMochaWebDriverTest(programOptions.capabilities, url, options)
-    .then(result => {
+    .then((result) => {
         for (const varName in result.dumpedGlobals) {
             const varValue = result.dumpedGlobals[varName];
             const fileName = programOptions.globalsToSave![varName];
@@ -287,7 +292,7 @@ runMochaWebDriverTest(programOptions.capabilities, url, options)
             process.exit(1);
         }
     })
-    .catch(error => {
+    .catch((error) => {
         console.error(`mocha-webdriver-runner: unexpected error: ${error}`);
         console.error(error);
         process.exit(1);
