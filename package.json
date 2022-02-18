@@ -37,7 +37,7 @@
   "license": "MIT",
   "dependencies": {
     "@zbigg/treesync": "^0.3.0",
-    "commander": "^6.1.0",
+    "commander": "^9.0.0",
     "lodash": "^4.17.20",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
