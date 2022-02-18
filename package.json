@@ -39,7 +39,7 @@
     "@zbigg/treesync": "^0.3.0",
     "commander": "^9.0.0",
     "lodash": "^4.17.20",
-    "selenium-webdriver": "^4.0.0-alpha.7"
+    "selenium-webdriver": "^4.1.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",
