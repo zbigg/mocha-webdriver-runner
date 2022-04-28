@@ -72,9 +72,9 @@ Convenience shortcuts:
 
 Useful links:
 
--   [Selenium Capabilities](https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities)
--   [Gecko driver capabilities](https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Capabilities.html)
 -   [Chrome driver capabilities](https://sites.google.com/a/chromium.org/chromedriver/capabilities)
+-   [Gecko driver capabilities](https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Capabilities.html)
+-   [Selenium Capabilities](https://www.selenium.dev/documentation/legacy/desired_capabilities/)
 
 Selenium WebDriverJS accepts capabilities passed by environment variables as below:
 
