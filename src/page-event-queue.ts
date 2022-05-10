@@ -6,7 +6,7 @@ declare global {
         __pageEventCallback?: () => void;
 
         __driverCommandQueue?: any[];
-        __driverCommandCallback?: () => void;
+        __driverCommandCallbacks?: Array<() => void>;
     }
 }
 
@@ -31,42 +31,54 @@ export function emitPageEvent(event: any) {
  *
  * @params done LAST PARAMETER callback to be called to return response to `driver`
  */
-function drainQueueClientWebDriver() {
+export function drainQueueClientWebDriver(...args: any[]) {
     // `WebDriver.executeAsyncScript` will pass `done` as very last argument. For safety, ensure
     // that really use last arg.
     const done: (response: any) => void = arguments[arguments.length - 1];
+    let timerId: any;
 
-    function tryDrainQueue() {
-        const q = (window as any).__pageEventQueue || [];
+    function tryDrainQueue(forceRespondWithAnything?: boolean) {
+        const q = window.__pageEventQueue || [];
 
-        if (q.length === 0) {
-            (window as any).__pageEventCallback = tryDrainQueue;
+        clearTimeout(timerId);
+        window.__pageEventCallback = undefined;
+
+        if (!forceRespondWithAnything && q.length === 0) {
+            window.__pageEventCallback = tryDrainQueue;
             return;
         }
-        (window as any).__pageEventCallback = null;
-        (window as any).__pageEventQueue = [];
+        window.__pageEventQueue = [];
         const encodedResponseRemote = JSON.stringify(q);
         done(encodedResponseRemote);
     }
+
+    timerId = setTimeout(() => tryDrainQueue(true), 100);
 
     tryDrainQueue();
 }
 
 export async function fetchPageEvents(driver: WebDriver): Promise<any[]> {
-    const ensodedResponseLocal: any = await driver.executeAsyncScript(drainQueueClientWebDriver);
+    const ensodedResponseLocal: any = await driver.executeAsyncScript(drainQueueClientWebDriver).catch(error => {
+        var newErr = new Error(`#fetchPageEvents: failed to receive next event: ${error}`);
+        newErr.stack += "\nCaused by: " + error.stack;
+        throw newErr;
+    });
     const parsed = JSON.parse(ensodedResponseLocal);
     return parsed;
 }
 
-function execPageCommandWebDriver() {
+export function execPageCommandWebDriver(...args: any[]) {
     const done: () => void = arguments[arguments.length - 1];
     if (!window.__driverCommandQueue) {
         window.__driverCommandQueue = [];
     }
     window.__driverCommandQueue.push(arguments[0]);
-    if (window.__driverCommandCallback) {
-        window.__driverCommandCallback();
-        window.__driverCommandCallback = undefined;
+    if (window.__driverCommandCallbacks) {
+        const tmpCallbacks = window.__driverCommandCallbacks;
+        window.__driverCommandCallbacks = undefined;
+        for (const callback of tmpCallbacks) {
+            callback();
+        }
     }
     done();
 }
@@ -79,7 +91,10 @@ export function fetchPageCommand(): Promise<any> {
     return new Promise(resolve => {
         function tryShiftCommand() {
             if (!window.__driverCommandQueue || window.__driverCommandQueue.length === 0) {
-                window.__driverCommandCallback = tryShiftCommand;
+                if (!window.__driverCommandCallbacks) {
+                    window.__driverCommandCallbacks = [];
+                }
+                window.__driverCommandCallbacks.push(tryShiftCommand);
                 return;
             }
 

@@ -12,22 +12,28 @@ export class WebDriverMessagePort extends MessagePortBase {
     }
 
     postMessage(message: RemoteRunnerMessage) {
-        this.queueCommand(() =>
-            queuePageCommand(this.driver, {
+        this.queueCommand(async () => {
+            await queuePageCommand(this.driver, {
                 type: "message",
                 data: message
-            })
-        );
+            });
+            await dumpDriverLogs(this.driver);
+        });
     }
 
     doReceiveRemoteEvents() {
-        return this.queueCommand(() =>
-            fetchPageEvents(this.driver).then(events => {
+        return this.queueCommand(async () => {
+            await fetchPageEvents(this.driver).then(events => {
                 events.forEach(event => {
                     this.dispatchEvent(event);
                 });
-            })
-        );
+            });
+            await dumpDriverLogs(this.driver);
+        }).catch(error => {
+            console.log("X", error);
+            const event = { type: error, error: error };
+            this.dispatchEvent((event as any) as Event);
+        });
     }
 
     private commandRunning: boolean = false;
@@ -45,13 +51,16 @@ export class WebDriverMessagePort extends MessagePortBase {
         this.commandRunning = true;
         command
             .fun()
-            .then(result => {
-                command.resolve(result);
-                this.commandRunning = false;
-            })
-            .catch(error => {
-                command.reject(error);
-            })
+            .then(
+                result => {
+                    this.commandRunning = false;
+                    command.resolve(result);
+                },
+                error => {
+                    this.commandRunning = false;
+                    command.reject(error);
+                }
+            )
             .then(() => {
                 this.tryProcessQueue();
             });
