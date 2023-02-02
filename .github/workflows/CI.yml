@@ -26,8 +26,14 @@ jobs:
       fail-fast: true
 
     steps:
-    - uses: actions/checkout@v2
-
+    # https://github.com/marketplace/actions/honeycomb-buildevents
+    - uses: honeycombio/gha-buildevents@v2
+      with:
+        apikey: ${{ secrets.BUILDEVENT_APIKEY }}
+        dataset: gha-buildevents_integration
+        status: ${{ job.status }}
+        matrix-key: ${{ matrix.os }}-${{ matrix.nodeVersion }}
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.nodeVersion }}
       uses: actions/setup-node@v3
       with:
