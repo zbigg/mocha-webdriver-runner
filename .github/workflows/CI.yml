@@ -26,33 +26,42 @@ jobs:
       fail-fast: true
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.nodeVersion }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.nodeVersion }}
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
 
-    - name: Use Node.js ${{ matrix.nodeVersion }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.nodeVersion }}
+      - name: Build
+        run: yarn prepare
 
-    - name: Install dependencies
-      run: yarn --frozen-lockfile
+      - name: Test
+        run: yarn test
 
-    - name: Build
-      run: yarn prepare
+  package:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: latest
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Create temporary package version
+        run: yarn version --no-git-tag-version --prepatch --preid `git log --pretty=format:'%h' -n 1`
 
-    - name: Test
-      run: yarn test
+      - name: Build package
+        run: yarn pack
 
-
-    - name: Create temporary package version
-      run: yarn version --no-git-tag-version --prepatch --preid `git log --pretty=format:'%h' -n 1`
-
-    - name: Build package
-      run: yarn pack
-
-    - name: Save package artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: npm-package
-        path: mocha-webdriver-runner*.tgz
+      - name: Save package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: npm-package
+          path: mocha-webdriver-runner*.tgz
 
 
