@@ -21,17 +21,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        nodeVersion: ["lts", "stable"]
+        nodeVersion: ["latest", "lts/*"]
         os: [ubuntu-latest, macOS-latest]
       fail-fast: true
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v1
+    - name: Use Node.js ${{ matrix.nodeVersion }}
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node_version }}
+        node-version: ${{ matrix.nodeVersion }}
 
     - name: Install dependencies
       run: yarn --frozen-lockfile
