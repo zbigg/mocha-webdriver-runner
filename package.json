@@ -53,7 +53,7 @@
     "@types/selenium-webdriver": "^4.0.9",
     "@types/sinon": "^9.0.7",
     "chai": "^4.2.0",
-    "chromedriver": "^98.0.1",
+    "chromedriver": "^110.0.0",
     "events": "^3.2.0",
     "geckodriver": "^3.0.1",
     "http-server": "^14.1.0",
