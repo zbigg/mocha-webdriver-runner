@@ -53,7 +53,7 @@
     "chai": "^4.2.0",
     "chromedriver": "^124.0.3",
     "events": "^3.2.0",
-    "geckodriver": "^3.0.1",
+    "geckodriver": "^4.4.0",
     "http-server": "^14.1.0",
     "mocha": "^10.2.0",
     "qs": "^6.9.2",
