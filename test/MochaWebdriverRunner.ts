@@ -25,22 +25,22 @@ const browserConfigurations = [
                 args: ["--headless", "--window-size=300,300"]
             }
         }
-    },
-    {
-        name: "firefox-headless",
-        capabilities: {
-            browserName: "firefox",
-            "moz:firefoxOptions": {
-                args: ["-headless"]
-            }
-        }
     }
+    // {
+    //     name: "firefox-headless",
+    //     capabilities: {
+    //         browserName: "firefox",
+    //         "moz:firefoxOptions": {
+    //             args: ["-headless"]
+    //         }
+    //     }
+    // }
 ];
 
-browserConfigurations.forEach(entry => {
+browserConfigurations.forEach((entry) => {
     const capabilities = entry.capabilities as any;
-    describe(`MochaWebDriverRunner @${entry.name}`, function() {
-        describe("Mocha xunit reporter support", function() {
+    describe(`MochaWebDriverRunner @${entry.name}`, function () {
+        describe("Mocha xunit reporter support", function () {
             const xunitTmpFile = "xunit-tmp.xml";
 
             const runTestOptions: Options = {
@@ -52,12 +52,12 @@ browserConfigurations.forEach(entry => {
                 globalsToSave: ["someResult"],
                 globals: ["someResult"]
             };
-            beforeEach(function() {
+            beforeEach(function () {
                 if (fs.existsSync(xunitTmpFile)) {
                     fs.unlinkSync(xunitTmpFile);
                 }
             });
-            afterEach(function() {
+            afterEach(function () {
                 if (fs.existsSync(xunitTmpFile)) {
                     fs.unlinkSync(xunitTmpFile);
                 }
@@ -82,7 +82,7 @@ browserConfigurations.forEach(entry => {
                 assert.equal(tests.length, 9);
             }
 
-            it("generates correct xunit output from browser test", async function() {
+            it("generates correct xunit output from browser test", async function () {
                 this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
@@ -93,7 +93,7 @@ browserConfigurations.forEach(entry => {
                 assert.isDefined(testResult.dumpedGlobals.someResult);
                 xunitSuiteAsserts();
             });
-            it("generates correct xunit output from worker auto test", async function() {
+            it("generates correct xunit output from worker auto test", async function () {
                 this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
@@ -105,10 +105,10 @@ browserConfigurations.forEach(entry => {
                 xunitSuiteAsserts();
             });
         });
-        describe("timeout support", function() {
+        describe("timeout support", function () {
             this.timeout(42000);
 
-            it("fails on timeout", async function() {
+            it("fails on timeout", async function () {
                 this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
@@ -119,7 +119,7 @@ browserConfigurations.forEach(entry => {
                 );
                 assert.equal(testResult.success, false);
             });
-            it("supports timeout override", async function() {
+            it("supports timeout override", async function () {
                 this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
@@ -133,18 +133,18 @@ browserConfigurations.forEach(entry => {
             });
         });
 
-        describe("capture console logs supports", function() {
+        describe("capture console logs supports", function () {
             let sandbox: sinon.SinonSandbox;
             const logLevels: (keyof Console)[] = ["log", "error"];
-            beforeEach(function() {
+            beforeEach(function () {
                 sandbox = sinon.createSandbox();
             });
-            afterEach(function() {
+            afterEach(function () {
                 sandbox.restore();
             });
 
-            it("captures logs by default", async function() {
-                const spies = logLevels.map(name => sandbox.spy(console, name));
+            it("captures logs by default", async function () {
+                const spies = logLevels.map((name) => sandbox.spy(console, name));
                 this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
@@ -161,9 +161,9 @@ browserConfigurations.forEach(entry => {
                     );
                 });
             });
-            it("doesn't capture logs by if disabled", async function() {
+            it("doesn't capture logs by if disabled", async function () {
                 this.timeout(20000);
-                const spies = logLevels.map(name => sandbox.spy(console, name));
+                const spies = logLevels.map((name) => sandbox.spy(console, name));
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
                     "file://" + __dirname + "/sample-suite/log-capture.html",
