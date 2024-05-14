@@ -7,3 +7,4 @@ mocha-webdriver-runner*.tgz
 lib-cov/
 .nyc_output/
 coverage.
+.yarn
