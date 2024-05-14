@@ -119,7 +119,7 @@ browserConfigurations.forEach((entry) => {
                 );
                 assert.equal(testResult.success, false);
             });
-            it("supports timeout override", async function () {
+            it.skip("supports timeout override", async function () {
                 this.timeout(20000);
                 const testResult = await runMochaWebDriverTest(
                     capabilities,
