@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        nodeVersion: ["latest", "lts/*"]
+        nodeVersion: ["18", "20"]
         os: [ubuntu-latest, macOS-latest]
       fail-fast: true
 
@@ -52,7 +52,7 @@ jobs:
           node-version: latest
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn --immutable
       - name: Create temporary package version
         run: yarn version --no-git-tag-version --prepatch --preid `git log --pretty=format:'%h' -n 1`
 
