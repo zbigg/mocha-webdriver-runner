@@ -149,6 +149,8 @@ export function runRemoteMochaTest(messagePort: MessagePort, options: Options): 
                         reject(new Error(message.message));
                     }
                     break;
+                default:
+                    console.error("#runRemoteMochaTest: invalid message received from page", message.type || event);
             }
         }
 
